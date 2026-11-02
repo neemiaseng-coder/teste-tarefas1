@@ -156,6 +156,44 @@ end $$;
 create trigger tasks_history before insert or update on public.tasks
 for each row execute procedure public.track_task_changes();
 
+create or replace function public.is_team_leader(target_team uuid)
+returns boolean language sql stable security definer set search_path = public
+as $ select exists (
+  select 1 from public.team_members tm
+  where tm.team_id=target_team and tm.user_id=auth.uid() and tm.member_role='leader'
+) $;
+
+-- Restringe alterações do responsável: ele pode atualizar somente o status.
+-- Criador, líder autorizado e admin podem editar os demais campos.
+create or replace function public.enforce_task_update_permissions()
+returns trigger language plpgsql security definer set search_path = public
+as $ declare v_role public.app_role;
+begin
+  if auth.uid() is null then raise exception 'Autenticação obrigatória'; end if;
+  v_role := public.current_app_role();
+  if v_role='admin' then return new; end if;
+  if v_role='manager' and old.team_id is not null and public.is_team_leader(old.team_id) then
+    if new.creator_id <> old.creator_id then raise exception 'Não é permitido alterar o criador'; end if;
+    return new;
+  end if;
+  if old.creator_id=auth.uid() then
+    if new.creator_id <> old.creator_id then raise exception 'Não é permitido alterar o criador'; end if;
+    return new;
+  end if;
+  if old.assignee_id=auth.uid() then
+    if row(new.title,new.description,new.creator_id,new.assignee_id,new.team_id,new.due_at,new.priority)
+       is distinct from
+       row(old.title,old.description,old.creator_id,old.assignee_id,old.team_id,old.due_at,old.priority) then
+      raise exception 'Responsável só pode atualizar o status da tarefa';
+    end if;
+    return new;
+  end if;
+  raise exception 'Sem permissão para alterar esta tarefa';
+end $;
+create trigger tasks_update_permissions before update on public.tasks
+for each row execute procedure public.enforce_task_update_permissions();
+
+
 alter table public.profiles enable row level security;
 alter table public.teams enable row level security;
 alter table public.team_members enable row level security;

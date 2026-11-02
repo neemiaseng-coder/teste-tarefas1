@@ -94,7 +94,7 @@ async function loadData(){
  ]);
  if(pr.error)throw pr.error;if(tr.error)throw tr.error;
  profiles=pr.data||[];tasks=tr.data||[];profile=profiles.find(p=>p.id===user.id);
- if(!profile||!profile.active){await supabase.auth.signOut();throw new Error('Seu perfil está inativo ou ainda não foi provisionado. Solicite ao administrador a liberação do acesso.')}
+ if(!profile)throw new Error('LOGIN AUTENTICADO, MAS NÃO FOI ENCONTRADO UM PERFIL EM public.profiles PARA ESTE USUÁRIO.');if(!profile.active)throw new Error('SEU PERFIL ESTÁ INATIVO. SOLICITE AO ADMINISTRADOR A LIBERAÇÃO DO ACESSO.')
  $('who').textContent=(profile.full_name||user.email)+' · '+roleLabel[profile.role];
  render();
 }
@@ -140,11 +140,11 @@ document.addEventListener('click',async e=>{
  const pid=e.target.dataset.profile;if(pid&&isAdmin()){const p=profiles.find(x=>x.id===pid);const role=prompt('Perfil: admin, manager ou user',p.role);if(!['admin','manager','user'].includes(role))return;const active=confirm('Manter usuário ativo? (Cancelar = inativar)');const {error}=await supabase.from('profiles').update({role,active}).eq('id',pid);if(error)alert(error.message);else await loadData()}
 });
 ['search','filterOwner','filterStatus','filterPriority'].forEach(id=>$(id).addEventListener('input',render));
-$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginBtn').disabled=true;message('authMessage','');const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});if(error)message('authMessage',error.message);else await start(data.user);$('loginBtn').disabled=false};
+$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginBtn').disabled=true;message('authMessage','VALIDANDO ACESSO...');try{const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});if(error)throw error;await start(data.user)}catch(err){message('authMessage','FALHA NO ACESSO: '+(err.message||'ERRO DESCONHECIDO'))}finally{$('loginBtn').disabled=false}};
 $('signupBtn').onclick=async()=>{message('authMessage','');const email=$('email').value.trim().toLowerCase(),password=$('password').value;if(!email||password.length<6){message('authMessage','Informe e-mail e senha com pelo menos 6 caracteres.');return}const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:email.split('@')[0]}}});if(error)message('authMessage',error.message);else message('authMessage',data.session?'Conta criada. Você já pode entrar.':'Conta criada. Confirme o e-mail e aguarde a liberação do administrador.')};
 async function start(u){user=u;if(!u){$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden');return}try{await loadData();$('authView').classList.add('hidden');$('appView').classList.remove('hidden');$('userbar').classList.remove('hidden')}catch(err){message('authMessage',err.message);$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden')}}
 $('logout').onclick=async()=>{await supabase.auth.signOut();user=null;profile=null;start(null)};
-supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user&&session.user.id!==user?.id)start(session.user);if(!session)start(null)});
+supabase.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;profile=null;start(null)}});
 supabase.auth.getSession().then(({data})=>start(data.session?.user||null));
 })();
 </script>

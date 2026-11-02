@@ -36,7 +36,7 @@ const SUPABASE_URL='https://yzlvpbaobgermogwuypx.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_g9qdkBJEazsQDLGJ_SZQ1g_s14H6yNI';
 const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=id=>document.getElementById(id),today=()=>{const d=new Date(),z=d.getTimezoneOffset()*60000;return new Date(Date.now()-z).toISOString().slice(0,10)};
-let user=null,profile=null,profiles=[],tasks=[],editing=null;
+let user=null,profile=null,profiles=[],tasks=[],teamIds=[],editing=null;
 const roleLabel={admin:'Administrador',manager:'Gestor',user:'Usuário'},statusLabel={pending:'Pendente',in_progress:'Em andamento',done:'Concluída'},priorityLabel={low:'Baixa',medium:'Média',high:'Alta'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isAdmin=()=>profile?.role==='admin',isManager=()=>['admin','manager'].includes(profile?.role);
@@ -55,7 +55,7 @@ async function loadData(){
 }
 function nav(id){document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('alt',b.dataset.tab!==id));render()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>nav(b.dataset.tab));
-function visible(){if(isAdmin())return tasks;if(isManager())return tasks.filter(t=>t.creator_id===user.id||t.assignee_id===user.id||profiles.some(p=>p.id===t.assignee_id));return tasks.filter(t=>t.assignee_id===user.id||t.creator_id===user.id)}
+function visible(){if(isAdmin())return tasks;if(isManager())return tasks.filter(t=>t.creator_id===user.id||t.assignee_id===user.id||(t.team_id&&teamIds.includes(t.team_id)));return tasks.filter(t=>t.assignee_id===user.id||t.creator_id===user.id)}
 function taskCard(t){const late=t.status!=='done'&&t.due_at&&t.due_at<today();const canEdit=isAdmin()||t.creator_id===user.id||(profile.role==='manager'&&t.team_id);const canStatus=t.assignee_id===user.id&&!canEdit;return '<article class="task"><div style="flex:1"><h3>'+esc(t.title)+'</h3><p class="muted">'+esc(t.description||'Sem descrição')+'</p><p class="muted">Responsável: '+esc(nameOf(t.assignee_id))+' · Criada por: '+esc(nameOf(t.creator_id))+'</p><span class="tag '+(t.priority==='high'?'high':t.priority==='medium'?'medium':'')+'">'+priorityLabel[t.priority]+'</span><span class="tag '+(t.status==='done'?'done':'')+'">'+statusLabel[t.status]+'</span><span class="tag '+(late?'late':'')+'">'+(late?'Atrasada':'Prazo: '+(t.due_at?esc(t.due_at):'Não definido'))+'</span></div><div class="actions">'+(canEdit||canStatus?'<button class="alt" data-edit="'+t.id+'">'+(canStatus?'Atualizar status':'Editar')+'</button>':'')+(isAdmin()?'<button class="del" data-delete="'+t.id+'">Excluir</button>':'')+'</div></article>'}
 function render(){
  const list=visible(),count=s=>list.filter(t=>t.status===s).length,late=list.filter(t=>t.status!=='done'&&t.due_at&&t.due_at<today()).length;

@@ -153,7 +153,7 @@ as $$ begin
   elsif new.status<>'done' then new.completed_at=null; end if;
   return new;
 end $$;
-create trigger tasks_history after insert or update on public.tasks
+create trigger tasks_history before insert or update on public.tasks
 for each row execute procedure public.track_task_changes();
 
 alter table public.profiles enable row level security;
@@ -168,25 +168,28 @@ alter table public.notifications enable row level security;
 
 create policy "profiles read authenticated" on public.profiles for select to authenticated
 using (active=true or id=auth.uid() or public.current_app_role()='admin');
-create policy "profile self update limited" on public.profiles for update to authenticated
-using (id=auth.uid() or public.current_app_role()='admin')
-with check (id=auth.uid() or public.current_app_role()='admin');
--- Importante: alterações de role devem ser feitas apenas por administrador via backend confiável.
+create policy "admins update profiles" on public.profiles for update to authenticated
+using (public.current_app_role()='admin')
+with check (public.current_app_role()='admin');
+-- Usuários comuns não podem alterar seu próprio perfil/role por esta API. Atualizações administrativas são restritas a admin.
 create policy "teams visible to members" on public.teams for select to authenticated
 using (created_by=auth.uid() or public.current_app_role()='admin' or exists(select 1 from public.team_members tm where tm.team_id=id and tm.user_id=auth.uid()));
 create policy "admins manage teams" on public.teams for all to authenticated
 using (public.current_app_role()='admin') with check (public.current_app_role()='admin');
+create or replace function public.is_team_member(target_team uuid)
+returns boolean language sql stable security definer set search_path = public
+as $ select exists(select 1 from public.team_members tm where tm.team_id=target_team and tm.user_id=auth.uid()) $;
 create policy "members visible to team" on public.team_members for select to authenticated
-using (user_id=auth.uid() or public.current_app_role()='admin' or exists(select 1 from public.team_members x where x.team_id=team_id and x.user_id=auth.uid()));
+using (user_id=auth.uid() or public.current_app_role()='admin' or public.is_team_member(team_id));
 create policy "admins manage memberships" on public.team_members for all to authenticated
 using (public.current_app_role()='admin') with check (public.current_app_role()='admin');
 
 create policy "read tasks in scope" on public.tasks for select to authenticated
-using (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or exists(select 1 from public.team_members tm where tm.team_id=team_id and tm.user_id=auth.uid()));
+using (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or exists(select 1 from public.team_members tm where tm.team_id=tasks.team_id and tm.user_id=auth.uid()));
 create policy "create own tasks" on public.tasks for insert to authenticated
 with check (creator_id=auth.uid() and exists(select 1 from public.profiles p where p.id=assignee_id and p.active=true));
 create policy "update tasks in scope" on public.tasks for update to authenticated
-using (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or (public.current_app_role()='manager' and team_id is not null and exists(select 1 from public.team_members tm where tm.team_id=team_id and tm.user_id=auth.uid() and tm.member_role='leader')))
+using (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or (public.current_app_role()='manager' and team_id is not null and exists(select 1 from public.team_members tm where tm.team_id=tasks.team_id and tm.user_id=auth.uid() and tm.member_role='leader')))
 with check (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or (public.current_app_role()='manager' and team_id is not null and exists(select 1 from public.team_members tm where tm.team_id=team_id and tm.user_id=auth.uid() and tm.member_role='leader')));
 create policy "admins delete tasks" on public.tasks for delete to authenticated
 using (public.current_app_role()='admin');

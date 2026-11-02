@@ -190,7 +190,7 @@ create policy "create own tasks" on public.tasks for insert to authenticated
 with check (creator_id=auth.uid() and exists(select 1 from public.profiles p where p.id=assignee_id and p.active=true));
 create policy "update tasks in scope" on public.tasks for update to authenticated
 using (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or (public.current_app_role()='manager' and team_id is not null and exists(select 1 from public.team_members tm where tm.team_id=tasks.team_id and tm.user_id=auth.uid() and tm.member_role='leader')))
-with check (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or (public.current_app_role()='manager' and team_id is not null and exists(select 1 from public.team_members tm where tm.team_id=team_id and tm.user_id=auth.uid() and tm.member_role='leader')));
+with check (public.current_app_role()='admin' or creator_id=auth.uid() or assignee_id=auth.uid() or (public.current_app_role()='manager' and team_id is not null and exists(select 1 from public.team_members tm where tm.team_id=tasks.team_id and tm.user_id=auth.uid() and tm.member_role='leader')));
 create policy "admins delete tasks" on public.tasks for delete to authenticated
 using (public.current_app_role()='admin');
 

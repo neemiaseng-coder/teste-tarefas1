@@ -65,6 +65,16 @@ input:focus,select:focus,textarea:focus{outline:2px solid #d9d1ff;border-color:#
 <div class="field full row"><button id="loginBtn">Entrar</button><button id="signupBtn" class="alt" type="button">Criar minha conta</button></div>
 <div id="authMessage" class="error full"></div>
 </form>
+<div class="field full" style="margin-top:12px"><button id="forgotPassword" class="alt" type="button">Esqueci minha senha</button></div>
+<div id="recoveryPanel" class="hidden">
+<h3>Redefinir senha</h3>
+<form id="recoveryForm" class="fields">
+<div class="field full"><label>Nova senha</label><input id="newPassword" type="password" minlength="6" autocomplete="new-password" required></div>
+<div class="field full"><label>Confirmar nova senha</label><input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" required></div>
+<div class="field full"><button id="savePassword" type="submit">Salvar nova senha</button></div>
+<div id="recoveryMessage" class="error full"></div>
+</form>
+</div>
 </section>
 <div id="appView" class="hidden">
 <nav><button data-tab="dashboard">Painel</button><button class="alt" data-tab="tasks">Tarefas</button><button class="alt" data-tab="people">Usuários</button><button class="alt" data-tab="reports">Relatórios</button></nav>
@@ -143,8 +153,10 @@ document.addEventListener('click',async e=>{
 $('loginForm').onsubmit=async e=>{e.preventDefault();$('loginBtn').disabled=true;message('authMessage','VALIDANDO ACESSO...');try{const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});if(error)throw error;await start(data.user)}catch(err){message('authMessage','FALHA NO ACESSO: '+(err.message||'ERRO DESCONHECIDO'))}finally{$('loginBtn').disabled=false}};
 $('signupBtn').onclick=async()=>{message('authMessage','');const email=$('email').value.trim().toLowerCase(),password=$('password').value;if(!email||password.length<6){message('authMessage','Informe e-mail e senha com pelo menos 6 caracteres.');return}const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:email.split('@')[0]}}});if(error)message('authMessage',error.message);else message('authMessage',data.session?'Conta criada. Você já pode entrar.':'Conta criada. Confirme o e-mail e aguarde a liberação do administrador.')};
 async function start(u){user=u;if(!u){$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden');return}try{await loadData();$('authView').classList.add('hidden');$('appView').classList.remove('hidden');$('userbar').classList.remove('hidden')}catch(err){message('authMessage',err.message);$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden')}}
+$('forgotPassword').onclick=async()=>{const email=$('email').value.trim().toLowerCase();if(!email){message('authMessage','INFORME O E-MAIL DA CONTA ADMINISTRADORA.');$('email').focus();return}$('forgotPassword').disabled=true;message('authMessage','ENVIANDO LINK DE RECUPERAÇÃO...');const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});$('forgotPassword').disabled=false;message('authMessage',error?'ERRO AO ENVIAR: '+error.message:'SE O E-MAIL ESTIVER CADASTRADO, VOCÊ RECEBERÁ UM LINK PARA REDEFINIR A SENHA. VERIFIQUE A CAIXA DE ENTRADA E O SPAM.');};
+$('recoveryForm').onsubmit=async e=>{e.preventDefault();message('recoveryMessage','');const p=$('newPassword').value,confirm=$('confirmPassword').value;if(p.length<6){message('recoveryMessage','A SENHA DEVE TER PELO MENOS 6 CARACTERES.');return}if(p!==confirm){message('recoveryMessage','AS SENHAS NÃO CONFEREM.');return}$('savePassword').disabled=true;const {error}=await supabase.auth.updateUser({password:p});$('savePassword').disabled=false;if(error){message('recoveryMessage','NÃO FOI POSSÍVEL ATUALIZAR: '+error.message);return}message('recoveryMessage','SENHA ATUALIZADA. VOCÊ JÁ PODE ENTRAR COM A NOVA SENHA.');$('recoveryForm').reset();$('recoveryPanel').classList.add('hidden');$('loginForm').classList.remove('hidden');$('forgotPassword').classList.remove('hidden');};
 $('logout').onclick=async()=>{await supabase.auth.signOut();user=null;profile=null;start(null)};
-supabase.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;profile=null;start(null)}});
+supabase.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;profile=null;start(null)}if(event==='PASSWORD_RECOVERY'){$('loginForm').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('recoveryPanel').classList.remove('hidden')}});
 supabase.auth.getSession().then(({data})=>start(data.session?.user||null));
 })();
 </script>

@@ -203,7 +203,7 @@ $('forgotPassword').onclick=async()=>{const email=$('email').value.trim().toLowe
 $('recoveryForm').onsubmit=async e=>{e.preventDefault();message('recoveryMessage','');const p=$('newPassword').value,confirm=$('confirmPassword').value;if(p.length<6){message('recoveryMessage','A SENHA DEVE TER PELO MENOS 6 CARACTERES.');return}if(p!==confirm){message('recoveryMessage','AS SENHAS NÃO CONFEREM.');return}$('savePassword').disabled=true;const {error}=await supabase.auth.updateUser({password:p});$('savePassword').disabled=false;if(error){message('recoveryMessage','NÃO FOI POSSÍVEL ATUALIZAR: '+error.message);return}message('recoveryMessage','SENHA ATUALIZADA. VOCÊ JÁ PODE ENTRAR COM A NOVA SENHA.');$('recoveryForm').reset();$('recoveryPanel').classList.add('hidden');$('loginForm').classList.remove('hidden');$('forgotPassword').classList.remove('hidden');};
 $('logout').onclick=async()=>{await supabase.auth.signOut();user=null;profile=null;start(null)};
 supabase.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;profile=null;start(null)}if(event==='PASSWORD_RECOVERY'){$('loginForm').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('recoveryPanel').classList.remove('hidden')}});
-supabase.auth.getSession().then(({data})=>start(data.session?.user||null));
+supabase.auth.getSession().then(({data,error})=>{if(error){message('authMessage','NÃO FOI POSSÍVEL VERIFICAR A SESSÃO: '+(error.message||'ERRO DESCONHECIDO'));return}if(!user)start(data.session?.user||null)}).catch(err=>message('authMessage','ERRO AO RESTAURAR A SESSÃO: '+(err.message||'ERRO DESCONHECIDO')));
 })();
 </script>
 </body></html>

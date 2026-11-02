@@ -137,7 +137,8 @@ function render(){
  $('stats').innerHTML=[['Pendente',count('pending')],['Em andamento',count('in_progress')],['Concluída',count('done')],['Atrasadas',late]].map(x=>'<div class="stat"><strong>'+x[1]+'</strong><span class="muted">'+x[0]+'</span></div>').join('');
  $('recent').innerHTML=list.slice(0,5).map(taskCard).join('')||'<div class="empty">Nenhuma tarefa cadastrada.</div>';
  const active=profiles.filter(p=>p.active);
- $('assignee').innerHTML=active.map(p=>'<option value="'+p.id+'">'+esc(p.full_name||p.id)+'</option>').join('');\n $('teamId').innerHTML='<option value="">Sem equipe</option>'+teams.map(t=>'<option value="'+t.id+'">'+esc(t.name)+'</option>').join('');
+ $('assignee').innerHTML=active.map(p=>'<option value="'+p.id+'">'+esc(p.full_name||p.id)+'</option>').join('');
+ $('teamId').innerHTML='<option value="">Sem equipe</option>'+teams.map(t=>'<option value="'+t.id+'">'+esc(t.name)+'</option>').join('');
  $('filterOwner').innerHTML='<option value="">Todos</option>'+active.map(p=>'<option value="'+p.id+'">'+esc(p.full_name||p.id)+'</option>').join('');
  const filtered=list.filter(t=>(!$('search').value||(t.title+' '+t.description).toLowerCase().includes($('search').value.toLowerCase()))&&(!$('filterOwner').value||t.assignee_id===$('filterOwner').value)&&(!$('filterStatus').value||t.status===$('filterStatus').value)&&(!$('filterPriority').value||t.priority===$('filterPriority').value));
  $('taskList').innerHTML=filtered.map(taskCard).join('')||'<div class="empty">Nenhuma tarefa encontrada.</div>';

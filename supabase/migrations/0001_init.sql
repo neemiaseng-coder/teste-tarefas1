@@ -158,16 +158,16 @@ for each row execute procedure public.track_task_changes();
 
 create or replace function public.is_team_leader(target_team uuid)
 returns boolean language sql stable security definer set search_path = public
-as $ select exists (
+as $$ select exists (
   select 1 from public.team_members tm
   where tm.team_id=target_team and tm.user_id=auth.uid() and tm.member_role='leader'
-) $;
+) $$;
 
 -- Restringe alterações do responsável: ele pode atualizar somente o status.
 -- Criador, líder autorizado e admin podem editar os demais campos.
 create or replace function public.enforce_task_update_permissions()
 returns trigger language plpgsql security definer set search_path = public
-as $ declare v_role public.app_role;
+as $$ declare v_role public.app_role;
 begin
   if auth.uid() is null then raise exception 'Autenticação obrigatória'; end if;
   v_role := public.current_app_role();
@@ -189,7 +189,7 @@ begin
     return new;
   end if;
   raise exception 'Sem permissão para alterar esta tarefa';
-end $;
+end $$;
 create trigger tasks_update_permissions before update on public.tasks
 for each row execute procedure public.enforce_task_update_permissions();
 
@@ -216,7 +216,7 @@ create policy "admins manage teams" on public.teams for all to authenticated
 using (public.current_app_role()='admin') with check (public.current_app_role()='admin');
 create or replace function public.is_team_member(target_team uuid)
 returns boolean language sql stable security definer set search_path = public
-as $ select exists(select 1 from public.team_members tm where tm.team_id=target_team and tm.user_id=auth.uid()) $;
+as $$ select exists(select 1 from public.team_members tm where tm.team_id=target_team and tm.user_id=auth.uid()) $$;
 create policy "members visible to team" on public.team_members for select to authenticated
 using (user_id=auth.uid() or public.current_app_role()='admin' or public.is_team_member(team_id));
 create policy "admins manage memberships" on public.team_members for all to authenticated

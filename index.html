@@ -152,7 +152,36 @@ document.addEventListener('click',async e=>{
  const pid=e.target.dataset.profile;if(pid&&isAdmin()){const p=profiles.find(x=>x.id===pid);const role=prompt('Perfil: admin, manager ou user',p.role);if(!['admin','manager','user'].includes(role))return;const active=confirm('Manter usuário ativo? (Cancelar = inativar)');const {error}=await supabase.from('profiles').update({role,active}).eq('id',pid);if(error)alert(error.message);else await loadData()}
 });
 ['search','filterOwner','filterStatus','filterPriority'].forEach(id=>$(id).addEventListener('input',render));
-$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginBtn').disabled=true;$('loginBtn').innerHTML='<span class="spinner"></span>ENTRANDO...';message('authMessage','');try{const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});if(error)throw error;await start(data.user)}catch(err){message('authMessage','NÃO FOI POSSÍVEL ENTRAR: '+(err.message||'ERRO DESCONHECIDO'))}finally{$('loginBtn').disabled=false;$('loginBtn').textContent='Entrar'}};
+function explainLoginError(err){
+ const code=String(err?.code||'').toLowerCase(),status=Number(err?.status||0),raw=String(err?.message||'Erro não identificado');
+ if(code==='invalid_credentials'||/invalid login credentials/i.test(raw))return 'E-MAIL OU SENHA INCORRETOS. CONFIRA OS DADOS E TENTE NOVAMENTE.';
+ if(code==='email_not_confirmed'||/email not confirmed/i.test(raw))return 'E-MAIL AINDA NÃO CONFIRMADO. VERIFIQUE A CAIXA DE ENTRADA E O SPAM.';
+ if(status===429||/rate limit|too many requests|over_email_send_rate_limit/i.test(raw))return 'MUITAS TENTATIVAS EM POUCO TEMPO. O SUPABASE LIMITOU O ACESSO TEMPORARIAMENTE. AGUARDE ANTES DE TENTAR NOVAMENTE.';
+ if(status===400)return 'DADOS DE ACESSO RECUSADOS PELO SUPABASE: '+raw;
+ if(status>=500)return 'ERRO NO SERVIDOR DE AUTENTICAÇÃO DO SUPABASE ('+status+'): '+raw;
+ if(/failed to fetch|network|fetcherror/i.test(raw))return 'FALHA DE CONEXÃO COM O SUPABASE. VERIFIQUE A INTERNET E TENTE NOVAMENTE. DETALHE: '+raw;
+ return 'ERRO AO ENTRAR'+(status?' (HTTP '+status+')':'')+(code?' ['+code+']':'')+': '+raw;
+}
+$('loginForm').onsubmit=async e=>{
+ e.preventDefault();
+ const btn=$('loginBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>VERIFICANDO ACESSO...';
+ message('authMessage','VALIDANDO E-MAIL E SENHA...');
+ let timeoutId;
+ try{
+  const loginPromise=supabase.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});
+  const timeoutPromise=new Promise((_,reject)=>{timeoutId=setTimeout(()=>reject(new Error('TIMEOUT_LOGIN')),15000)});
+  const {data,error}=await Promise.race([loginPromise,timeoutPromise]);
+  clearTimeout(timeoutId);
+  if(error)throw error;
+  if(!data?.user)throw new Error('O SUPABASE NÃO RETORNOU UM USUÁRIO. VERIFIQUE O CADASTRO.');
+  message('authMessage','AUTENTICADO. CARREGANDO SEU PERFIL E AS TAREFAS...');
+  await start(data.user);
+ }catch(err){
+  clearTimeout(timeoutId);
+  if(err?.message==='TIMEOUT_LOGIN')message('authMessage','TEMPO ESGOTADO: O SUPABASE NÃO RESPONDEU EM 15 SEGUNDOS. VERIFIQUE A CONEXÃO E TENTE NOVAMENTE.');
+  else message('authMessage',explainLoginError(err));
+ }finally{btn.disabled=false;btn.textContent='Entrar'}
+};
 $('signupBtn').onclick=()=>{$('signupForm').reset();$('signupMessage').className='authNotice hidden full';$('signupMessage').textContent='';$('signupModal').classList.add('open');$('signupName').focus()};$('closeSignup').onclick=()=>{$('signupModal').classList.remove('open')};$('signupModal').onclick=e=>{if(e.target===$('signupModal'))$('signupModal').classList.remove('open')};$('signupForm').onsubmit=async e=>{e.preventDefault();const name=$('signupName').value.trim(),email=$('signupEmail').value.trim().toLowerCase(),password=$('signupPassword').value,confirm=$('signupConfirm').value;const box=$('signupMessage');box.className='authNotice full';if(!name){box.textContent='INFORME SEU NOME.';return}if(password.length<6){box.textContent='A SENHA DEVE TER PELO MENOS 6 CARACTERES.';return}if(password!==confirm){box.textContent='AS SENHAS NÃO CONFEREM.';return}const btn=$('createAccountBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>CRIANDO CONTA...';try{const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name}}});if(error)throw error;box.className='authNotice success full';box.textContent=data.session?'CONTA CRIADA. AGUARDE A LIBERAÇÃO DO ADMINISTRADOR.':'CADASTRO RECEBIDO. CONFIRME O E-MAIL, SE SOLICITADO, E AGUARDE A LIBERAÇÃO DO ADMINISTRADOR.';$('signupForm').reset()}catch(err){box.className='authNotice error full';box.textContent='NÃO FOI POSSÍVEL CRIAR A CONTA: '+(err.message||'ERRO DESCONHECIDO')}finally{btn.disabled=false;btn.textContent='Criar conta'}};
 async function start(u){user=u;if(!u){$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden');return}try{await loadData();$('authView').classList.add('hidden');$('appView').classList.remove('hidden');$('userbar').classList.remove('hidden')}catch(err){message('authMessage',err.message);$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden')}}
 $('forgotPassword').onclick=async()=>{const email=$('email').value.trim().toLowerCase();if(!email){message('authMessage','INFORME O E-MAIL DA CONTA ADMINISTRADORA.');$('email').focus();return}$('forgotPassword').disabled=true;$('forgotPassword').innerHTML='<span class="spinner"></span>ENVIANDO...';message('authMessage','');try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});if(error)throw error;message('authMessage','SOLICITAÇÃO PROCESSADA PELO SERVIDOR. SE O E-MAIL ESTIVER CADASTRADO, O LINK SERÁ ENVIADO. VERIFIQUE ENTRADA, SPAM E LIXEIRA. SE NÃO CHEGAR, O SERVIÇO DE E-MAIL DO PROJETO PRECISA SER VERIFICADO NO SUPABASE.')}catch(err){message('authMessage','ERRO AO SOLICITAR RECUPERAÇÃO: '+(err.message||'ERRO DESCONHECIDO'))}finally{$('forgotPassword').disabled=false;$('forgotPassword').textContent='Esqueci minha senha'}};

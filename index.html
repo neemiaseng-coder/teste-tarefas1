@@ -68,7 +68,7 @@ async function loadAll(){
  profile=p.data;if(!profile.active)throw Error('Acesso inativo.');
  categories=c.data||[];entries=e.data||[];plans=pl.data||[];
  $('who').textContent=profile.full_name||user.email;$('logout').classList.remove('hidden');$('authView').classList.add('hidden');$('app').classList.remove('hidden');
- fillCategories();render();
+ fillCategories();render();subscribe();
 }
 function fillCategories(){
  const options=categories.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('');
@@ -110,7 +110,7 @@ $('entryForm').onsubmit=async ev=>{
   if(id){const original=entries.find(x=>x.id===id);if(!original||original.status==='paid')throw Error('Conta paga não pode ser alterada. Desfaça o pagamento primeiro.');
    const mode=original.series_id&&confirm('Alterar também as próximas parcelas desta série?')?'series':'single';
    let q=sb.from('financial_entries').update({description:desc,amount,entry_type:type,category_id:cat,due_date:due,month_ref:due.slice(0,7)+'-01',notes});
-   if(mode==='series')q=q.eq('series_id',original.series_id).gte('installment_number',original.installment_number).eq('status','pending');else q=q.eq('id',id);
+   if(mode==='series'){q=q.eq('series_id',original.series_id).eq('status','pending');q=original.recurrence_type==='monthly'?q.gte('month_ref',original.month_ref):q.gte('installment_number',original.installment_number)}else q=q.eq('id',id);
    const {error}=await q;if(error)throw error;
   }else{
    const base={description:desc,amount,entry_type:type,category_id:cat,due_date:due,month_ref:due.slice(0,7)+'-01',status:'pending',recurrence_type:rec,notes,created_by:user.id};

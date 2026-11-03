@@ -212,7 +212,7 @@ function render(){
 function entryHTML(e){
  const cat=categories.find(c=>c.id===e.category_id)?.name||'Sem grupo',paid=e.status==='paid',hidden=document.body.classList.contains('values-hidden');
  const installment=e.installment_number?' · '+e.installment_number+'/'+e.installment_total:'';
- return '<div class="bill-row '+(paid?'is-paid':'')+'" data-row-edit="'+(paid?'':e.id)+'"><div class="bill-main"><b>'+esc(e.description)+'</b><small>'+esc(cat)+' · Vence '+e.due_date.split('-').reverse().join('/')+installment+'</small></div><div><div class="bill-amount">'+(hidden?'••••••':money(e.amount))+'</div><div class="bill-actions">'+(paid?'<button class="edit-action" data-undo="'+e.id+'">Desfazer</button>':'<button class="pay-action" data-pay="'+e.id+'">Pagar</button>')+'</div></div></div>';
+ return '<div class="bill-row '+(paid?'is-paid':'')+'" data-row-edit="'+(paid?'':e.id)+'"><div class="bill-main"><b>'+esc(e.description)+'</b><small>'+esc(cat)+' · Vence '+e.due_date.split('-').reverse().join('/')+installment+'</small></div><div><div class="bill-amount">'+(hidden?'••••••':money(e.amount))+'</div><div class="bill-actions">'+(paid?'<button class="edit-action" data-undo="'+e.id+'">Desfazer</button>':'<button class="pay-action" data-pay="'+e.id+'">Pagar</button><button class="edit-action" data-edit="'+e.id+'" style="display:none">Editar</button>')+'</div></div></div>';
 }
 function renderEntries(){
  if(!$('entryList')||!$('filterMonth')||!$('historySearch'))return;

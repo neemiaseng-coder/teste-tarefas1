@@ -287,7 +287,44 @@ function logout(){sb.auth.signOut()}
 $('logout').onclick=logout;
 function authStage(message,percent,state='loading',error=''){$('authStatusText').textContent=message;$('authStatus').className='auth-status '+state;$('authProgress').classList.toggle('hidden',state!=='loading');$('authProgressBar').style.width=percent+'%';$('loginSpinner').classList.toggle('hidden',state!=='loading');$('loginBtnText').textContent=state==='loading'?'Aguarde...':state==='success'?'Acesso liberado':'Entrar com segurança';$('authMsg').textContent=error;$('authMsg').classList.toggle('hidden',!error)}
 $('togglePassword').onclick=()=>{const show=$('password').type==='password';$('password').type=show?'text':'password';$('togglePassword').textContent=show?'🙈':'👁';$('togglePassword').setAttribute('aria-label',show?'Ocultar senha':'Mostrar senha')};
-$('loginForm').onsubmit=async ev=>{ev.preventDefault();if(!$('loginForm').reportValidity())return;$('loginBtn').disabled=true;authStage('Conectando ao servidor...',18);try{if(!window.supabase?.createClient)throw Error('A biblioteca de conexão não carregou. Verifique sua internet e atualize a página.');authStage('Validando e-mail e senha...',42);const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});if(error)throw error;if(!data?.user)throw Error('O servidor não retornou um usuário válido.');user=data.user;authStage('Acesso confirmado. Carregando suas contas...',68);await loadAll();authStage('Tudo pronto!',100,'success')}catch(err){const detail=[err?.message,err?.code?'Código: '+err.code:'',err?.status?'HTTP: '+err.status:''].filter(Boolean).join(' · ');authStage('Não foi possível entrar',0,'error',detail||'Erro inesperado ao autenticar.')}finally{$('loginBtn').disabled=false;$('loginSpinner').classList.add('hidden');$('loginBtnText').textContent='Entrar com segurança'}};
+$('loginForm').addEventListener('submit',async ev=>{
+ ev.preventDefault();
+ ev.stopPropagation();
+ const email=$('email').value.trim().toLowerCase();
+ const password=$('password').value;
+ if(!email||!password){authStage('Preencha e-mail e senha',0,'error','Os dois campos são obrigatórios.');return}
+ $('loginBtn').disabled=true;
+ authStage('Conectando ao servidor...',12);
+ let finished=false;
+ const watchdog=setTimeout(()=>{if(!finished)authStage('A conexão está demorando',55,'loading','Ainda aguardando resposta do servidor. Não feche esta tela.')},12000);
+ try{
+  if(!window.supabase||!window.supabase.createClient)throw new Error('Biblioteca de conexão indisponível. Atualize a página.');
+  authStage('Validando e-mail e senha...',35);
+  const result=await sb.auth.signInWithPassword({email,password});
+  if(result.error)throw result.error;
+  if(!result.data||!result.data.user)throw new Error('O servidor não confirmou o usuário.');
+  user=result.data.user;
+  authStage('Login confirmado. Abrindo seus dados...',62);
+  try{
+   await loadAll();
+   authStage('Acesso concluído',100,'success');
+  }catch(dataError){
+   $('app').classList.add('hidden');
+   $('authView').classList.remove('hidden');
+   authStage('Senha aceita, mas houve erro ao carregar o app',0,'error',dataError.message||String(dataError));
+  }
+ }catch(err){
+  $('app').classList.add('hidden');
+  $('authView').classList.remove('hidden');
+  const detail=[err&&err.message,err&&err.code?'Código: '+err.code:'',err&&err.status?'HTTP: '+err.status:''].filter(Boolean).join(' · ');
+  authStage('Falha no login',0,'error',detail||'Erro não identificado.');
+ }finally{
+  finished=true;clearTimeout(watchdog);
+  $('loginBtn').disabled=false;
+  $('loginSpinner').classList.add('hidden');
+  $('loginBtnText').textContent='Entrar com segurança';
+ }
+},{once:true});
 sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;$('app').classList.add('hidden');$('authView').classList.remove('hidden');$('logout').classList.add('hidden')}});
 sb.auth.getSession().then(async({data,error})=>{if(error){authStage('Falha ao verificar sessão',0,'error',error.message);return}if(data.session){user=data.session.user;authStage('Sessão encontrada. Carregando seus dados...',35);try{await loadAll()}catch(e){authStage('Erro ao carregar seus dados',0,'error',e.message)}}}).catch(e=>authStage('Falha na conexão',0,'error',e.message));
 let channel;function subscribe(){if(channel)sb.removeChannel(channel);channel=sb.channel('finance-live').on('postgres_changes',{event:'*',schema:'public',table:'financial_entries'},()=>refresh()).on('postgres_changes',{event:'*',schema:'public',table:'financial_plans'},()=>refresh()).on('postgres_changes',{event:'*',schema:'public',table:'finance_categories'},()=>refresh()).subscribe()}

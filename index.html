@@ -1,214 +1,159 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#31304b"><title>Gestão de Tarefas</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect x=%225%22 y=%2212%22 width=%2246%22 height=%2248%22 rx=%227%22 fill=%22%23c7754f%22/%3E%3Crect x=%2210%22 y=%2217%22 width=%2236%22 height=%2240%22 rx=%223%22 fill=%22%23deddff%22/%3E%3Crect x=%2220%22 y=%226%22 width=%2223%22 height=%2212%22 rx=%223%22 fill=%22%235b5e8b%22/%3E%3Cpath d=%22m16 29 3 3 6-7%22 fill=%22none%22 stroke=%22%23e83d62%22 stroke-width=%225%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#263f35"><meta name="description" content="Gestor Financeiro Familiar">
+<link rel="manifest" href="./manifest.webmanifest"><title>Financeiro Familiar</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
 <style>
-:root{font-family:Inter,system-ui,Arial,sans-serif;color:#20312a;background:#f3f6f4;--g:#285b45;--line:#e1e9e4;--muted:#718078}*{box-sizing:border-box}body{margin:0}body,body *:not(#authView):not(#authView *){text-transform:uppercase!important}
-#authView,#authView *{text-transform:none!important}header{background:#203d32;color:white;padding:18px max(18px,calc((100% - 1100px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-size:20px;font-weight:850}.muted{color:var(--muted);font-size:13px}main{max-width:1100px;margin:24px auto;padding:0 16px}nav,.row,.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}nav{margin-bottom:18px}button{border:0;border-radius:9px;padding:10px 14px;background:var(--g);color:white;font-weight:650;cursor:pointer}button.alt{background:#eaf0ec;color:#294b3a}button.del{background:#fff0f0;color:#a43b3b}button:disabled{opacity:.45;cursor:not-allowed}.tab{display:none}.tab.on{display:block}.panel,.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat strong{display:block;font-size:28px}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px}.full{grid-column:1/-1}label{font-size:13px;font-weight:700;color:#4a5b52}input,select,textarea{font:inherit;width:100%;padding:10px;border:1px solid #d7e1db;border-radius:9px;background:white;text-transform:uppercase}input[type=email],input[type=password]{text-transform:none}textarea{min-height:75px}.task{border:1px solid var(--line);border-radius:11px;padding:13px;margin:9px 0;display:flex;justify-content:space-between;gap:10px}.task h3{margin:0 0 5px;font-size:15px}.task p{margin:4px 0}.tag{display:inline-block;padding:4px 8px;border-radius:30px;background:#eef2ef;font-size:11px;margin:5px 4px 0 0}.high,.late{background:#fde9e6;color:#a43b2b}.medium{background:#fff4dc;color:#93600e}.done{background:#e5f4e9;color:#267043}.empty{text-align:center;padding:24px;color:var(--muted)}.modal{position:fixed;inset:0;background:#14251dcc;display:none;align-items:center;justify-content:center;padding:15px;z-index:4}.modal.open{display:flex}.modalbox{background:white;border-radius:15px;padding:20px;width:min(650px,100%);max-height:90vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center}.auth{max-width:430px;margin:8vh auto;padding:24px;background:white;border:1px solid var(--line);border-radius:16px}.error{color:#a43b2b;font-size:13px;white-space:pre-wrap}.hidden{display:none!important}@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.grid,.fields{grid-template-columns:1fr}.task{flex-direction:column}header{padding:15px}}
-
-/* IDENTIDADE VISUAL — PALETA DO ÍCONE */
-:root{font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif;color:#312e4b;background:#f5f3ff;--g:#e83d62;--line:#e6e2f5;--muted:#777493}
-header{background:#312e4b;color:#fff;border-bottom:5px solid #c7754f}
-.brand-wrap{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
-.app-logo{width:48px;height:48px;flex:0 0 48px;background:#deddff;border-radius:10px}
-.brand{font-size:20px;font-weight:850;letter-spacing:.2px;color:#fff}
-.version-label{font-size:10px;color:#deddff;margin-top:3px;letter-spacing:.5px}
-.brand-subtitle{font-size:12px;color:#deddff;flex-basis:100%;margin-left:61px;margin-top:-8px}
-button{background:#e83d62}button.alt{background:#deddff;color:#312e4b}
-.done{background:#e4f8e9;color:#267043}
-.high,.late{background:#fde8ee;color:#a92048}
-.medium{background:#fff2d7;color:#93600e}
-.panel,.stat,.auth,.modalbox{border-color:#e6e2f5}
-input:focus,select:focus,textarea:focus{outline:2px solid #b5b5ea;border-color:#7865df}
-
-/* IDENTIDADE VISUAL — REFERÊNCIA APENAS DE DESIGN */
-:root{font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif;color:#302d49;background:#f7f6fc;--g:#7865df;--line:#ebe8f5;--muted:#85819b}
-body{background:linear-gradient(135deg,#f8f7ff 0%,#f3f1fb 100%);min-height:100vh}
-header{position:sticky;top:0;z-index:3;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);color:#302d49;border-bottom:1px solid #ebe8f5;padding:14px 28px;box-shadow:0 3px 18px #51428b0a}
-.brand{color:#6f5bd3;letter-spacing:.2px}
-header>div:first-child>div:last-child{color:#918ca8!important}
-#userbar{display:flex;align-items:center;gap:10px;color:#625d7d;font-size:13px}
-main{max-width:none;margin:24px 28px 30px 250px;padding:0}
-nav{position:fixed;z-index:2;left:16px;top:88px;bottom:18px;width:210px;margin:0;padding:18px 13px;display:flex;flex-direction:column;align-items:stretch;gap:9px;background:rgba(255,255,255,.94);border:1px solid #e9e5f5;border-radius:20px;box-shadow:0 8px 28px #493c7b14}
-nav button{width:100%;text-align:left;padding:12px 14px;border-radius:12px;background:transparent;color:#77728e;font-weight:650;transition:background .15s,color .15s,transform .15s}
-nav button:hover{background:#f3f0ff;color:#6d58d0}
-nav button:not(.alt){background:#eeeaff;color:#6652ce;box-shadow:inset 0 0 0 1px #e1dbff}
-button{background:#7865df;border-radius:11px;box-shadow:0 3px 9px #7865df22}
-button:hover{background:#6854d0}
-button.alt{background:#f0edfb;color:#665d91;box-shadow:none}
-button.alt:hover{background:#e8e3fa}
-button.del{background:#fff0f1;color:#b94d60;box-shadow:none}
-.panel,.stat{background:rgba(255,255,255,.96);border:1px solid #ebe8f5;border-radius:18px;box-shadow:0 5px 18px #51428b0a;padding:19px}
-.stat{background:linear-gradient(145deg,#fff 0%,#faf9ff 100%)}
-.stat strong{color:#6f5bd3;font-size:30px}
-h2{color:#393451;font-size:19px;letter-spacing:-.2px}
-.task{background:#fff;border:1px solid #eeebf6;border-radius:13px;padding:14px;transition:box-shadow .15s}
-.task:hover{box-shadow:0 5px 16px #51428b10}
-label{color:#625d7d}
-input,select,textarea{border-color:#e4e0ef;border-radius:11px;background:#fff;color:#393451}
-input:focus,select:focus,textarea:focus{outline:2px solid #d9d1ff;border-color:#9b8ce9}
-.tag{background:#f0edfb;color:#7165a4}
-.high,.late{background:#ffe9ed;color:#b94d60}
-.medium{background:#fff3dc;color:#a87926}
-.done{background:#e8f7ef;color:#32865c}
-.empty{color:#928da6}
-.auth{box-shadow:0 12px 34px #51428b12;border-color:#ebe8f5}
-.modalbox{border:1px solid #ebe8f5;border-radius:20px;box-shadow:0 18px 60px #21174430}
-@media(max-width:800px){
- main{margin:18px 14px;padding:0}
- nav{position:static;width:auto;height:auto;bottom:auto;left:auto;top:auto;margin:0 0 16px;padding:9px;flex-direction:row;overflow-x:auto;border-radius:15px}
- nav button{width:auto;white-space:nowrap;text-align:center;padding:10px 12px}
- header{padding:13px 16px}
- .stats{grid-template-columns:1fr 1fr}
- .grid,.fields{grid-template-columns:1fr}
- .task{flex-direction:column}
-}
-
-
-.authNotice{margin-top:12px;padding:11px 13px;border-radius:10px;font-size:13px;line-height:1.45;background:#f1efff;color:#554a91}.authNotice.error{background:#fff0f1;color:#a43b50}.authNotice.success{background:#eaf8f0;color:#28734c}.spinner{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;margin-right:7px;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.authActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.authActions button{flex:1}.authModal{position:fixed;inset:0;z-index:10;background:#211a3a88;display:none;align-items:center;justify-content:center;padding:16px}.authModal.open{display:flex}.authModalBox{background:#fff;width:min(460px,100%);padding:24px;border-radius:20px;box-shadow:0 20px 70px #21174444}.authModalHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}.authModalHead h2{margin:0}
-.password-wrap{position:relative;display:flex;align-items:center;width:100%}.password-wrap input{padding-right:46px}.password-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:36px;height:36px;padding:7px;background:transparent!important;color:#777493!important;display:grid;place-items:center;border-radius:8px}.password-toggle:hover{background:#eeecf8!important}.password-toggle svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}</style>
+:root{font-family:Inter,system-ui,Arial,sans-serif;color:#26352d;background:#f4f6f3;--green:#294d3d;--olive:#78805a;--line:#e1e7e1;--muted:#778178;--red:#b84a4a}
+*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;background:var(--green);color:#fff;font-weight:650;cursor:pointer}button.secondary{background:#e8eee9;color:#294d3d}button.danger{background:#f9eaea;color:#a33}button:disabled{opacity:.5}header{background:#263f35;color:white;padding:17px max(16px,calc((100% - 1100px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-size:20px;font-weight:800}.muted{color:var(--muted);font-size:13px}main{max-width:1100px;margin:22px auto;padding:0 16px}nav{display:flex;gap:8px;overflow:auto;margin-bottom:18px}nav button{white-space:nowrap}nav button.active{background:var(--olive)}.view{display:none}.view.active{display:block}.panel,.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat strong{display:block;font-size:25px;margin-top:5px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:700;color:#526057}.field input,.field select,.field textarea{padding:11px;border:1px solid #d8e1d9;border-radius:9px;width:100%;background:white}.field textarea{min-height:70px}.full{grid-column:1/-1}.entry{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.entry:last-child{border:0}.entry h3{font-size:15px;margin:0 0 5px}.pill{display:inline-block;background:#edf2ed;border-radius:30px;padding:4px 8px;font-size:11px;margin:3px 3px 0 0}.paid{color:#287245;background:#e6f4e9}.late{color:#a33;background:#fbeaea}.money{font-weight:800;white-space:nowrap}.empty{text-align:center;padding:25px;color:var(--muted)}.modal{display:none;position:fixed;inset:0;background:#101b16aa;z-index:5;align-items:center;justify-content:center;padding:14px}.modal.open{display:flex}.modalbox{background:white;border-radius:16px;padding:20px;width:min(620px,100%);max-height:92vh;overflow:auto}.auth{max-width:400px;margin:9vh auto;padding:24px;background:#fff;border-radius:16px;border:1px solid var(--line)}.hidden{display:none!important}.month{font-size:18px;font-weight:800}.small{font-size:12px}.progress{height:9px;background:#e8eee9;border-radius:10px;overflow:hidden}.progress span{display:block;height:100%;background:var(--olive)}@media(max-width:700px){main{margin:15px auto}.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.entry{align-items:flex-start}.entry .row{justify-content:flex-end}header{padding:14px 16px}}
+</style>
 </head>
 <body>
-<header><div class="brand-wrap"><svg class="app-logo" viewBox="0 0 512 512" role="img" aria-label="Ícone Gestão de Tarefas"><rect x="39" y="76" width="342" height="412" rx="26" fill="#ab604b"/><rect x="55" y="76" width="326" height="412" rx="26" fill="#c7754f"/><rect x="68" y="104" width="283" height="355" rx="6" fill="#deddff"/><path d="M173 61a36 36 0 0 1 72 0" fill="none" stroke="#5b5e8b" stroke-width="14"/><rect x="141" y="61" width="138" height="60" rx="11" fill="#5b5e8b"/><g fill="#b5b5ea"><rect x="177" y="154" width="153" height="13" rx="7"/><rect x="177" y="185" width="111" height="13" rx="7"/><rect x="177" y="229" width="153" height="13" rx="7"/><rect x="177" y="260" width="111" height="13" rx="7"/><rect x="177" y="304" width="153" height="13" rx="7"/><rect x="177" y="335" width="111" height="13" rx="7"/><rect x="177" y="378" width="90" height="13" rx="7"/><rect x="177" y="408" width="111" height="13" rx="7"/></g><g><rect x="89" y="150" width="60" height="51" rx="10" fill="#e83d62"/><rect x="89" y="225" width="60" height="51" rx="10" fill="#59b8f5"/><rect x="89" y="299" width="60" height="51" rx="10" fill="#46cc6b"/><rect x="89" y="373" width="60" height="51" rx="10" fill="#ffbd3d"/><g fill="none" stroke="#deddff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="m107 176 9 9 17-18"/><path d="m107 250 9 9 17-18"/><path d="m107 325 9 9 17-18"/><path d="m107 399 9 9 17-18"/></g></g><g transform="rotate(28 365 280)"><rect x="339" y="131" width="54" height="255" rx="26" fill="#e83d62"/><path d="M339 174h54v212h-54z" fill="#ce2955"/><path d="M339 131a27 27 0 0 1 54 0v27h-54z" fill="#312e4b"/><path d="M339 158h54v17h-54z" fill="#deddff"/><path d="m339 386 54 0-27 49z" fill="#ffb18d"/><path d="m366 435 27-49h-54z" fill="#312e4b"/></g></svg><div><div class="brand">GESTÃO DE TAREFAS</div><div class="version-label">VERSÃO 1.0.5</div></div><div class="brand-subtitle">Organização pessoal e gestão de equipe</div></div><div id="userbar" class="hidden"><span id="who" style="margin-right:10px"></span><button id="logout" class="alt">Sair</button></div></header>
+<header><div><div class="brand">Financeiro Familiar</div><div class="muted" style="color:#d2ddd5">Controle compartilhado da casa</div></div><div class="row"><span id="who" class="small"></span><button id="logout" class="secondary hidden">Sair</button></div></header>
 <main>
-<section id="authView" class="auth">
-<h2>Acessar o sistema</h2>
-<p class="muted">Entre com seu e-mail e senha cadastrados.</p>
-<form id="loginForm" class="fields">
-<div class="field full"><label>E-mail</label><input id="email" type="email" autocomplete="username" required></div>
-<div class="field full"><label for="password">Senha</label><div class="password-wrap"><input id="password" type="password" autocomplete="current-password" minlength="6" required><button id="togglePassword" class="password-toggle" type="button" aria-label="Mostrar senha" title="Mostrar senha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
-<div class="field full row"><button id="loginBtn">Entrar</button><button id="signupBtn" class="alt" type="button">Criar minha conta</button></div>
-<div id="authMessage" class="error full"></div>
-</form>
-<div class="field full" style="margin-top:12px"><button id="forgotPassword" class="alt" type="button">Esqueci minha senha</button></div>
-<div id="recoveryPanel" class="hidden">
-<h3>Redefinir senha</h3>
-<form id="recoveryForm" class="fields">
-<div class="field full"><label>Nova senha</label><input id="newPassword" type="password" minlength="6" autocomplete="new-password" required></div>
-<div class="field full"><label>Confirmar nova senha</label><input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" required></div>
-<div class="field full"><button id="savePassword" type="submit">Salvar nova senha</button></div>
-<div id="recoveryMessage" class="error full"></div>
-</form>
-</div>
+<section id="authView" class="auth"><h2>Acessar sistema</h2><form id="loginForm" class="field"><label>E-mail</label><input id="email" type="email" autocomplete="username" required><label>Senha</label><input id="password" type="password" autocomplete="current-password" required><button id="loginBtn">Entrar</button><div id="authMsg" class="muted"></div></form></section>
+<div id="app" class="hidden">
+<nav><button class="active" data-view="dashboard">Dashboard</button><button data-view="accounts">Contas</button><button data-view="plans">Planejamento</button><button data-view="settings">Configurações</button></nav>
+<section id="dashboard" class="view active">
+<div class="panel row between"><button class="secondary" id="prevMonth">‹</button><div class="month" id="monthLabel"></div><button class="secondary" id="nextMonth">›</button></div>
+<div class="stats" id="stats"></div>
+<div class="grid"><div class="panel"><h3>Contas do mês</h3><div id="dashEntries"></div></div><div class="panel"><h3>Próximos meses</h3><div id="forecast"></div></div></div>
 </section>
-<div class="authModal" id="signupModal"><div class="authModalBox"><div class="authModalHead"><h2>Criar nova conta</h2><button id="closeSignup" class="alt" type="button">Fechar</button></div><form id="signupForm" class="fields"><div class="field full"><label>Nome completo</label><input id="signupName" autocomplete="name" required maxlength="100"></div><div class="field full"><label>E-mail</label><input id="signupEmail" type="email" autocomplete="email" required></div><div class="field full"><label>Senha</label><input id="signupPassword" type="password" minlength="6" autocomplete="new-password" required></div><div class="field full"><label>Confirmar senha</label><input id="signupConfirm" type="password" minlength="6" autocomplete="new-password" required></div><div class="field full"><button id="createAccountBtn" type="submit">Criar conta</button><div id="signupMessage" class="authNotice hidden full" aria-live="polite"></div></div></form></div></div><div id="appView" class="hidden">
-<nav><button data-tab="dashboard">Painel</button><button class="alt" data-tab="tasks">Tarefas</button><button class="alt" data-tab="people">Usuários</button><button class="alt" data-tab="reports">Relatórios</button></nav>
-<section id="dashboard" class="tab on"><div class="stats" id="stats"></div><div class="grid"><div class="panel"><h2>Atividades recentes</h2><div id="recent"></div></div><div class="panel"><h2>Acesso rápido</h2><p class="muted">Cadastre tarefas, defina responsáveis e acompanhe prazos.</p><button id="quick">+ Nova tarefa</button><p class="muted">Dados sincronizados pelo Supabase.</p></div></div></section>
-<section id="tasks" class="tab"><div class="panel"><div class="row" style="justify-content:space-between"><h2>Tarefas</h2><button id="add">+ Nova tarefa</button></div><div class="fields"><div class="field"><label>Buscar</label><input id="search" placeholder="Título ou descrição"></div><div class="field"><label>Responsável</label><select id="filterOwner"></select></div><div class="field"><label>Status</label><select id="filterStatus"><option value="">Todos</option><option value="pending">Pendente</option><option value="in_progress">Em andamento</option><option value="done">Concluída</option></select></div><div class="field"><label>Prioridade</label><select id="filterPriority"><option value="">Todas</option><option value="low">Baixa</option><option value="medium">Média</option><option value="high">Alta</option></select></div></div></div><div class="panel" id="taskList"></div></section>
-<section id="people" class="tab"><div class="panel"><h2>Usuários</h2><div id="userList"></div><p class="muted">Novos acessos são criados em Authentication → Users no painel Supabase. A alteração de perfil e ativação fica disponível somente para administrador.</p></div></section>
-<section id="reports" class="tab"><div class="panel"><h2>Produtividade por responsável</h2><div id="reportList"></div></div></section>
+<section id="accounts" class="view">
+<div class="panel row between"><div><h2 style="margin:0">Contas e lançamentos</h2><span class="muted">Entradas, despesas e reservas</span></div><button id="newEntry">+ Novo lançamento</button></div>
+<div class="panel grid"><div class="field"><label>Mês</label><input type="month" id="filterMonth"></div><div class="field"><label>Grupo</label><select id="filterCategory"><option value="">Todos os grupos</option></select></div><div class="field"><label>Situação</label><select id="filterStatus"><option value="">Todas</option><option value="pending">Pendentes</option><option value="paid">Pagas</option></select></div><div class="field"><label>Tipo</label><select id="filterType"><option value="">Todos</option><option value="expense">Despesas</option><option value="income">Receitas</option><option value="reserve">Reservas</option></select></div></div>
+<div class="panel" id="entryList"></div>
+</section>
+<section id="plans" class="view"><div class="panel row between"><div><h2 style="margin:0">Planejamentos</h2><span class="muted">Objetivos e valor mensal necessário</span></div><button id="newPlan">+ Novo planejamento</button></div><div id="planList"></div></section>
+<section id="settings" class="view"><div class="panel"><h2>Configurações</h2><p>Os dois usuários cadastrados possuem permissão Master e compartilham os mesmos lançamentos.</p><h3>Grupos de contas</h3><div class="row"><div class="field" style="flex:1"><label>Novo grupo</label><input id="newCategoryName" placeholder="Nome do grupo"></div><div class="field"><label>Tipo</label><select id="newCategoryType"><option value="expense">Despesa</option><option value="income">Receita</option><option value="reserve">Reserva</option></select></div><button id="addCategory">Adicionar</button></div><div id="categoryList"></div></div><div class="panel"><h3>Instalação no celular</h3><p class="muted">Use o menu do navegador e selecione “Adicionar à tela inicial” ou “Instalar aplicativo”.</p><button id="installBtn" class="secondary hidden">Instalar aplicativo</button></div></section>
 </div>
 </main>
-<div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle">Nova tarefa</h2><button class="alt" id="close">Fechar</button></div><form id="taskForm" class="fields"><input id="taskId" type="hidden"><div class="field full"><label>Título</label><input id="title" required maxlength="160"></div><div class="field full"><label>Descrição</label><textarea id="description"></textarea></div><div class="field"><label>Responsável</label><select id="assignee" required></select></div><div class="field"><label>Equipe</label><select id="teamId"><option value="">Sem equipe</option></select></div><div class="field"><label>Prioridade</label><select id="priority"><option value="low">Baixa</option><option value="medium" selected>Média</option><option value="high">Alta</option></select></div><div class="field"><label>Prazo</label><input id="due" type="date"></div><div class="field"><label>Status</label><select id="status"><option value="pending">Pendente</option><option value="in_progress">Em andamento</option><option value="done">Concluída</option></select></div><div class="field full"><button id="saveTask">Salvar tarefa</button><div id="taskMessage" class="error"></div></div></form></div></div>
+<div class="modal" id="entryModal"><div class="modalbox"><div class="row between"><h2 id="entryTitle">Novo lançamento</h2><button class="secondary" data-close="entryModal">Fechar</button></div>
+<form id="entryForm" class="grid"><input type="hidden" id="entryId"><input type="hidden" id="seriesId">
+<div class="field full"><label>Descrição</label><input id="description" required maxlength="180"></div>
+<div class="field"><label>Valor (R$)</label><input id="amount" type="number" min="0.01" step="0.01" required></div>
+<div class="field"><label>Tipo</label><select id="entryType"><option value="expense">Despesa</option><option value="income">Receita</option><option value="reserve">Reserva</option></select></div>
+<div class="field"><label>Grupo</label><select id="categoryId" required></select></div>
+<div class="field"><label>Vencimento</label><input id="dueDate" type="date" required></div>
+<div class="field"><label>Repetição</label><select id="recurrence"><option value="once">Somente esta vez</option><option value="monthly">Todo mês (24 meses)</option><option value="installments">Parcelamento</option></select></div>
+<div class="field" id="countWrap" style="display:none"><label>Quantidade de parcelas</label><input id="installmentCount" type="number" min="2" max="120" value="12"></div>
+<div class="field full"><label>Observações</label><textarea id="notes"></textarea></div><div class="full"><button id="saveEntry">Salvar lançamento</button><div id="entryMsg" class="muted"></div></div></form></div></div>
+<div class="modal" id="planModal"><div class="modalbox"><div class="row between"><h2>Novo planejamento</h2><button class="secondary" data-close="planModal">Fechar</button></div><form id="planForm" class="grid"><div class="field full"><label>Nome do objetivo</label><input id="planTitle" required placeholder="Ex.: Viagem de férias"></div><div class="field"><label>Valor total (R$)</label><input id="planAmount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Já tenho guardado (R$)</label><input id="planSaved" type="number" min="0" step="0.01" value="0"></div><div class="field"><label>Começar a guardar em</label><input id="planStart" type="month" required></div><div class="field"><label>Mês do objetivo</label><input id="planTarget" type="month" required></div><div class="field full"><label>Descrição</label><textarea id="planDescription"></textarea></div><div class="full"><button>Salvar planejamento</button><div id="planMsg" class="muted"></div></div></form></div></div>
 <script>
-(function(){
-const SUPABASE_URL='https://yzlvpbaobgermogwuypx.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY='sb_publishable_g9qdkBJEazsQDLGJ_SZQ1g_s14H6yNI';
-const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-const $=id=>document.getElementById(id),today=()=>{const d=new Date(),z=d.getTimezoneOffset()*60000;return new Date(Date.now()-z).toISOString().slice(0,10)};
-let user=null,profile=null,profiles=[],tasks=[],teamIds=[],teams=[],teamMembers=[],editing=null;
-const roleLabel={admin:'Administrador',manager:'Gestor',user:'Usuário'},statusLabel={pending:'Pendente',in_progress:'Em andamento',done:'Concluída'},priorityLabel={low:'Baixa',medium:'Média',high:'Alta'};
+(()=> {
+const URL='https://yzlvpbaobgermogwuypx.supabase.co',KEY='sb_publishable_g9qdkBJEazsQDLGJ_SZQ1g_s14H6yNI';
+const sb=window.supabase.createClient(URL,KEY);const $=id=>document.getElementById(id);
+let user=null,profile=null,categories=[],entries=[],plans=[],month=new Date();month.setDate(1);
+const money=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const monthKey=d=>new Date(d+'T12:00:00').toISOString().slice(0,7);
+const firstDay=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-01';
+const plusMonth=(s,n)=>{const d=new Date(s+'T12:00:00');d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,10)};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const isAdmin=()=>profile?.role==='admin',isManager=()=>['admin','manager'].includes(profile?.role);
-const nameOf=id=>profiles.find(p=>p.id===id)?.full_name||'Usuário';
-$('togglePassword').onclick=()=>{const input=$('password'),show=input.type==='password';input.type=show?'text':'password';$('togglePassword').setAttribute('aria-label',show?'Ocultar senha':'Mostrar senha');$('togglePassword').title=show?'Ocultar senha':'Mostrar senha';$('togglePassword').innerHTML=show?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a16 16 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10 10 0 0 0 4-.8"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';input.focus()};
-function message(id,msg){$(id).textContent=msg||''}
-document.addEventListener('input',e=>{const el=e.target;if(!el.closest('#authView')&&el.matches('input:not([type=email]):not([type=password]):not([type=date]):not([type=hidden]), textarea')){const start=el.selectionStart,end=el.selectionEnd;const upper=el.value.toLocaleUpperCase('pt-BR');if(el.value!==upper){el.value=upper;try{el.setSelectionRange(start,end)}catch(_){}}}});
-async function loadData(){
- const [pr,tr,tm,mm]=await Promise.all([
-  supabase.from('profiles').select('id,full_name,role,active').order('full_name'),
-  supabase.from('tasks').select('id,title,description,creator_id,assignee_id,team_id,due_at,priority,status,completed_at,created_at,updated_at').order('created_at',{ascending:false}),
-  supabase.from('teams').select('id,name,created_by').order('name'),
-  supabase.from('team_members').select('team_id,user_id,member_role')
+const monthName=s=>new Date(s+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+function showMsg(id,s){$(id).textContent=s||''}
+function setView(id){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id));if(id==='accounts')renderEntries();if(id==='plans')renderPlans()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.remove('open'));
+function openModal(id){$(id).classList.add('open')}
+async function loadAll(){
+ const [p,c,e,pl]=await Promise.all([
+  sb.from('profiles').select('id,full_name,active').eq('id',user.id).single(),
+  sb.from('finance_categories').select('*').eq('active',true).order('position').order('name'),
+  sb.from('financial_entries').select('*').order('due_date'),
+  sb.from('financial_plans').select('*').order('target_month')
  ]);
- if(pr.error)throw pr.error;if(tr.error)throw tr.error;if(tm.error)throw tm.error;if(mm.error)throw mm.error;
- profiles=pr.data||[];tasks=tr.data||[];teams=tm.data||[];teamMembers=mm.data||[];teamIds=teamMembers.filter(m=>m.user_id===user.id).map(m=>m.team_id);profile=profiles.find(p=>p.id===user.id);
- if(!profile)throw new Error('LOGIN AUTENTICADO, MAS NÃO FOI ENCONTRADO UM PERFIL EM public.profiles PARA ESTE USUÁRIO.');if(!profile.active)throw new Error('SEU PERFIL ESTÁ INATIVO. SOLICITE AO ADMINISTRADOR A LIBERAÇÃO DO ACESSO.')
- $('who').textContent=(profile.full_name||user.email)+' · '+roleLabel[profile.role];
- render();
+ for(const x of [p,c,e,pl])if(x.error)throw x.error;
+ profile=p.data;if(!profile.active)throw Error('Acesso inativo.');
+ categories=c.data||[];entries=e.data||[];plans=pl.data||[];
+ $('who').textContent=profile.full_name||user.email;$('logout').classList.remove('hidden');$('authView').classList.add('hidden');$('app').classList.remove('hidden');
+ fillCategories();render();
 }
-function nav(id){document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('alt',b.dataset.tab!==id));render()}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>nav(b.dataset.tab));
-function visible(){if(isAdmin())return tasks;if(isManager())return tasks.filter(t=>t.creator_id===user.id||t.assignee_id===user.id||(t.team_id&&teamIds.includes(t.team_id)));return tasks.filter(t=>t.assignee_id===user.id||t.creator_id===user.id)}
-function taskCard(t){const late=t.status!=='done'&&t.due_at&&t.due_at<today();const canEdit=isAdmin()||t.creator_id===user.id||(profile.role==='manager'&&t.team_id&&teamMembers.some(m=>m.team_id===t.team_id&&m.user_id===user.id&&m.member_role==='leader'));const canStatus=t.assignee_id===user.id&&!canEdit;return '<article class="task"><div style="flex:1"><h3>'+esc(t.title)+'</h3><p class="muted">'+esc(t.description||'Sem descrição')+'</p><p class="muted">Responsável: '+esc(nameOf(t.assignee_id))+' · Criada por: '+esc(nameOf(t.creator_id))+'</p><span class="tag '+(t.priority==='high'?'high':t.priority==='medium'?'medium':'')+'">'+priorityLabel[t.priority]+'</span><span class="tag '+(t.status==='done'?'done':'')+'">'+statusLabel[t.status]+'</span><span class="tag '+(late?'late':'')+'">'+(late?'Atrasada':'Prazo: '+(t.due_at?esc(t.due_at):'Não definido'))+'</span></div><div class="actions">'+(canEdit||canStatus?'<button class="alt" data-edit="'+t.id+'">'+(canStatus?'Atualizar status':'Editar')+'</button>':'')+(isAdmin()?'<button class="del" data-delete="'+t.id+'">Excluir</button>':'')+'</div></article>'}
+function fillCategories(){
+ const options=categories.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('');
+ $('categoryId').innerHTML=options;$('filterCategory').innerHTML='<option value="">Todos os grupos</option>'+options;
+ $('categoryList').innerHTML=categories.map(c=>'<div class="entry"><span>'+esc(c.name)+' <span class="pill">'+c.category_type+'</span></span><span class="muted">'+(c.is_system?'Padrão':'Personalizado')+'</span></div>').join('');
+}
+function monthEntries(s){return entries.filter(e=>e.month_ref===s)}
 function render(){
- const list=visible(),count=s=>list.filter(t=>t.status===s).length,late=list.filter(t=>t.status!=='done'&&t.due_at&&t.due_at<today()).length;
- $('stats').innerHTML=[['Pendente',count('pending')],['Em andamento',count('in_progress')],['Concluída',count('done')],['Atrasadas',late]].map(x=>'<div class="stat"><strong>'+x[1]+'</strong><span class="muted">'+x[0]+'</span></div>').join('');
- $('recent').innerHTML=list.slice(0,5).map(taskCard).join('')||'<div class="empty">Nenhuma tarefa cadastrada.</div>';
- const active=profiles.filter(p=>p.active);
- $('assignee').innerHTML=active.map(p=>'<option value="'+p.id+'">'+esc(p.full_name||p.id)+'</option>').join('');
- $('teamId').innerHTML='<option value="">Sem equipe</option>'+teams.map(t=>'<option value="'+t.id+'">'+esc(t.name)+'</option>').join('');
- $('filterOwner').innerHTML='<option value="">Todos</option>'+active.map(p=>'<option value="'+p.id+'">'+esc(p.full_name||p.id)+'</option>').join('');
- const filtered=list.filter(t=>(!$('search').value||(t.title+' '+t.description).toLowerCase().includes($('search').value.toLowerCase()))&&(!$('filterOwner').value||t.assignee_id===$('filterOwner').value)&&(!$('filterStatus').value||t.status===$('filterStatus').value)&&(!$('filterPriority').value||t.priority===$('filterPriority').value));
- $('taskList').innerHTML=filtered.map(taskCard).join('')||'<div class="empty">Nenhuma tarefa encontrada.</div>';
- $('userList').innerHTML=profiles.map(p=>'<article class="task"><div><b>'+esc(p.full_name||'Sem nome')+'</b><p class="muted">'+roleLabel[p.role]+' · '+(p.active?'Ativo':'Inativo')+'</p></div><div class="actions">'+(isAdmin()&&p.id!==user.id?'<button class="alt" data-profile="'+p.id+'">Editar acesso</button>':'')+'</div></article>').join('');
- $('reportList').innerHTML=active.map(p=>{const a=list.filter(t=>t.assignee_id===p.id);return '<article class="task"><b>'+esc(p.full_name||'Usuário')+'</b><span class="muted">'+a.filter(t=>t.status==='done').length+' concluídas · '+a.filter(t=>t.status!=='done').length+' abertas · '+a.length+' no total</span></article>'}).join('');
+ $('monthLabel').textContent=monthName(firstDay(month));const s=firstDay(month),list=monthEntries(s);
+ const income=list.filter(x=>x.entry_type==='income').reduce((a,x)=>a+Number(x.amount),0);
+ const expense=list.filter(x=>x.entry_type==='expense').reduce((a,x)=>a+Number(x.amount),0);
+ const reserve=list.filter(x=>x.entry_type==='reserve').reduce((a,x)=>a+Number(x.amount),0);
+ const paid=list.filter(x=>x.status==='paid').reduce((a,x)=>a+Number(x.amount),0);
+ const pending=list.filter(x=>x.status==='pending').reduce((a,x)=>a+Number(x.amount),0);
+ $('stats').innerHTML=[['Receitas previstas',money(income)],['Despesas previstas',money(expense)],['Já pago / reservado',money(paid)],['Saldo previsto',money(income-expense-reserve)]].map(x=>'<div class="stat"><span class="muted">'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join('');
+ $('dashEntries').innerHTML=list.slice().sort((a,b)=>a.due_date.localeCompare(b.due_date)).slice(0,8).map(entryHTML).join('')||'<div class="empty">Nenhum lançamento neste mês.</div>';
+ $('forecast').innerHTML=Array.from({length:4},(_,i)=>{const m=plusMonth(s,i+1),a=monthEntries(m),inc=a.filter(x=>x.entry_type==='income').reduce((n,x)=>n+Number(x.amount),0),out=a.filter(x=>x.entry_type!=='income').reduce((n,x)=>n+Number(x.amount),0);return '<div class="entry"><div><b>'+monthName(m)+'</b><div class="muted small">Receitas '+money(inc)+'</div></div><b>'+money(inc-out)+'</b></div>'}).join('');
+ renderEntries();
 }
-function openForm(t){
- if(!t&&!isManager()){alert('Somente administrador ou gestor pode criar tarefas.');return}
- editing=t||null;$('taskForm').reset();$('taskId').value=t?.id||'';$('modalTitle').textContent=t?'Editar tarefa':'Nova tarefa';$('title').value=t?.title||'';$('description').value=t?.description||'';$('assignee').value=t?.assignee_id||user.id;$('priority').value=t?.priority||'medium';$('due').value=t?.due_at||'';$('status').value=t?.status||'pending';if($('teamId'))$('teamId').value=t?.team_id||'';message('taskMessage','');
- const statusOnly=t&&t.assignee_id===user.id&&!isAdmin()&&t.creator_id!==user.id&&!(profile.role==='manager'&&t.team_id&&teamMembers.some(m=>m.team_id===t.team_id&&m.user_id===user.id&&m.member_role==='leader'));
- ['title','description','assignee','priority','due','teamId'].forEach(id=>$(id).disabled=!!statusOnly);
- $('saveTask').textContent=statusOnly?'Atualizar status':'Salvar tarefa';$('modal').classList.add('open');
+function entryHTML(e){
+ const cat=categories.find(c=>c.id===e.category_id)?.name||'Sem grupo';
+ const paid=e.status==='paid';
+ return '<div class="entry"><div style="min-width:0;flex:1"><h3>'+esc(e.description)+'</h3><div class="muted small">'+esc(cat)+' · Venc. '+e.due_date.split('-').reverse().join('/')+(e.installment_number?' · '+e.installment_number+'/'+e.installment_total:'')+'</div><span class="pill '+(paid?'paid':'')+'">'+(paid?'PAGO':'PENDENTE')+'</span> <span class="pill">'+(e.entry_type==='income'?'RECEITA':e.entry_type==='reserve'?'RESERVA':'DESPESA')+'</span></div><div style="text-align:right"><div class="money">'+money(e.amount)+'</div><div class="row" style="justify-content:flex-end;margin-top:6px">'+(paid?'<button class="secondary small" data-undo="'+e.id+'">Desfazer pgto.</button>':'<button class="small" data-pay="'+e.id+'">Baixar</button>')+(paid?'':'<button class="secondary small" data-edit="'+e.id+'">Editar</button>')+'</div></div></div>';
 }
-function close(){$('modal').classList.remove('open');editing=null}
-$('add').onclick=()=>openForm();$('quick').onclick=()=>{nav('tasks');openForm()};$('close').onclick=close;$('modal').onclick=e=>{if(e.target===$('modal'))close()};
-$('taskForm').onsubmit=async e=>{
- e.preventDefault();message('taskMessage','');$('saveTask').disabled=true;
+function renderEntries(){
+ const s=$('filterMonth').value||firstDay(month);$('filterMonth').value=s.slice(0,7);
+ const list=entries.filter(e=>e.month_ref===s&&(!$('filterCategory').value||e.category_id===$('filterCategory').value)&&(!$('filterStatus').value||e.status===$('filterStatus').value)&&(!$('filterType').value||e.entry_type===$('filterType').value));
+ $('entryList').innerHTML=list.slice().sort((a,b)=>a.due_date.localeCompare(b.due_date)).map(entryHTML).join('')||'<div class="empty">Nenhum lançamento encontrado.</div>';
+}
+$('prevMonth').onclick=()=>{month.setMonth(month.getMonth()-1);render()};$('nextMonth').onclick=()=>{month.setMonth(month.getMonth()+1);render()};
+['filterMonth','filterCategory','filterStatus','filterType'].forEach(id=>$(id).addEventListener('change',renderEntries));
+$('newEntry').onclick=()=>{if(!categories.length)return; $('entryForm').reset();$('entryId').value='';$('seriesId').value='';$('entryTitle').textContent='Novo lançamento';$('dueDate').value=new Date().toISOString().slice(0,10);$('recurrence').value='once';$('countWrap').style.display='none';$('entryModal').classList.add('open')};
+$('recurrence').onchange=()=>{$('countWrap').style.display=$('recurrence').value==='installments'?'flex':'none'};
+$('entryType').onchange=()=>{const t=$('entryType').value;const c=categories.find(x=>x.category_type===t);if(c)$('categoryId').value=c.id};
+$('entryForm').onsubmit=async ev=>{
+ ev.preventDefault();$('saveEntry').disabled=true;showMsg('entryMsg','Salvando...');
  try{
-  const statusOnly=editing&&editing.assignee_id===user.id&&!isAdmin()&&editing.creator_id!==user.id&&!(profile.role==='manager'&&editing.team_id&&teamMembers.some(m=>m.team_id===editing.team_id&&m.user_id===user.id&&m.member_role==='leader'));
-  let result;
-  if(editing){const patch=statusOnly?{status:$('status').value}:{title:$('title').value.trim().toLocaleUpperCase('pt-BR'),description:$('description').value.toLocaleUpperCase('pt-BR'),assignee_id:$('assignee').value,team_id:$('teamId').value||null,priority:$('priority').value,due_at:$('due').value||null,status:$('status').value};result=await supabase.from('tasks').update(patch).eq('id',editing.id)}
-  else{result=await supabase.from('tasks').insert({title:$('title').value.trim().toLocaleUpperCase('pt-BR'),description:$('description').value.toLocaleUpperCase('pt-BR'),creator_id:user.id,assignee_id:$('assignee').value,team_id:$('teamId').value||null,priority:$('priority').value,due_at:$('due').value||null,status:$('status').value})}
-  if(result.error)throw result.error;close();await loadData();
- }catch(err){message('taskMessage',err.message||'Não foi possível salvar.')}
- finally{$('saveTask').disabled=false}
+  const id=$('entryId').value,desc=$('description').value.trim(),amount=Number($('amount').value),due=$('dueDate').value,rec=$('recurrence').value,cat=$('categoryId').value,type=$('entryType').value,notes=$('notes').value;
+  if(id){const original=entries.find(x=>x.id===id);if(!original||original.status==='paid')throw Error('Conta paga não pode ser alterada. Desfaça o pagamento primeiro.');
+   const mode=original.series_id&&confirm('Alterar também as próximas parcelas desta série?')?'series':'single';
+   let q=sb.from('financial_entries').update({description:desc,amount,entry_type:type,category_id:cat,due_date:due,month_ref:due.slice(0,7)+'-01',notes});
+   if(mode==='series')q=q.eq('series_id',original.series_id).gte('installment_number',original.installment_number).eq('status','pending');else q=q.eq('id',id);
+   const {error}=await q;if(error)throw error;
+  }else{
+   const base={description:desc,amount,entry_type:type,category_id:cat,due_date:due,month_ref:due.slice(0,7)+'-01',status:'pending',recurrence_type:rec,notes,created_by:user.id};
+   if(rec==='installments'||rec==='monthly'){
+    const count=rec==='installments'?Math.max(2,Math.min(120,Number($('installmentCount').value))):24;
+    const series=crypto.randomUUID(),rows=Array.from({length:count},(_,i)=>{const d=plusMonth(due,i);return {...base,due_date:d,month_ref:d.slice(0,7)+'-01',series_id:series,recurrence_type:rec,installment_number:rec==='installments'?i+1:null,installment_total:rec==='installments'?count:null,description:desc+(rec==='installments'?' ('+(i+1)+'/'+count+')':'')}});const {error}=await sb.from('financial_entries').insert(rows);if(error)throw error;
+   }else{const {error}=await sb.from('financial_entries').insert(base);if(error)throw error}
+  }
+  $('entryModal').classList.remove('open');await refresh();
+ }catch(err){showMsg('entryMsg',err.message)}finally{$('saveEntry').disabled=false}
 };
-document.addEventListener('click',async e=>{
- const id=e.target.dataset.edit;if(id){const t=tasks.find(x=>x.id===id);if(t)openForm(t)}
- const del=e.target.dataset.delete;if(del&&isAdmin()&&confirm('Excluir esta tarefa?')){const {error}=await supabase.from('tasks').delete().eq('id',del);if(error)alert(error.message);else await loadData()}
- const pid=e.target.dataset.profile;if(pid&&isAdmin()){const p=profiles.find(x=>x.id===pid);const role=prompt('Perfil: admin, manager ou user',p.role);if(!['admin','manager','user'].includes(role))return;const active=confirm('Manter usuário ativo? (Cancelar = inativar)');const {error}=await supabase.from('profiles').update({role,active}).eq('id',pid);if(error)alert(error.message);else await loadData()}
+document.addEventListener('click',async ev=>{
+ const pay=ev.target.dataset.pay,undo=ev.target.dataset.undo,edit=ev.target.dataset.edit;
+ if(pay||undo){const id=pay||undo,patch=pay?{status:'paid',paid_at:new Date().toISOString(),paid_by:user.id}:{status:'pending',paid_at:null,paid_by:null};const {error}=await sb.from('financial_entries').update(patch).eq('id',id);if(error)alert(error.message);else await refresh()}
+ if(edit){const e=entries.find(x=>x.id===edit);if(!e||e.status==='paid')return; $('entryId').value=e.id;$('seriesId').value=e.series_id||'';$('entryTitle').textContent='Editar lançamento';$('description').value=e.description;$('amount').value=e.amount;$('entryType').value=e.entry_type;$('categoryId').value=e.category_id;$('dueDate').value=e.due_date;$('notes').value=e.notes||'';$('recurrence').value='once';$('recurrence').disabled=!!e.series_id;$('countWrap').style.display='none';openModal('entryModal')}
 });
-['search','filterOwner','filterStatus','filterPriority'].forEach(id=>$(id).addEventListener('input',render));
-function explainLoginError(err){
- const code=String(err?.code||'').toLowerCase(),status=Number(err?.status||0),raw=String(err?.message||'Erro não identificado');
- if(code==='invalid_credentials'||/invalid login credentials/i.test(raw))return 'E-MAIL OU SENHA INCORRETOS. CONFIRA OS DADOS E TENTE NOVAMENTE.';
- if(code==='email_not_confirmed'||/email not confirmed/i.test(raw))return 'E-MAIL AINDA NÃO CONFIRMADO. VERIFIQUE A CAIXA DE ENTRADA E O SPAM.';
- if(status===429||/rate limit|too many requests|over_email_send_rate_limit/i.test(raw))return 'MUITAS TENTATIVAS EM POUCO TEMPO. O SUPABASE LIMITOU O ACESSO TEMPORARIAMENTE. AGUARDE ANTES DE TENTAR NOVAMENTE.';
- if(status===400)return 'DADOS DE ACESSO RECUSADOS PELO SUPABASE: '+raw;
- if(status>=500)return 'ERRO NO SERVIDOR DE AUTENTICAÇÃO DO SUPABASE ('+status+'): '+raw;
- if(/failed to fetch|network|fetcherror/i.test(raw))return 'FALHA DE CONEXÃO COM O SUPABASE. VERIFIQUE A INTERNET E TENTE NOVAMENTE. DETALHE: '+raw;
- return 'ERRO AO ENTRAR'+(status?' (HTTP '+status+')':'')+(code?' ['+code+']':'')+': '+raw;
+$('newPlan').onclick=()=>{$('planForm').reset();$('planStart').value=firstDay(month).slice(0,7);$('planTarget').value=plusMonth(firstDay(month),6).slice(0,7);$('planSaved').value='0';openModal('planModal')};
+$('planForm').onsubmit=async ev=>{ev.preventDefault();showMsg('planMsg','Salvando planejamento...');try{
+ const title=$('planTitle').value.trim(),target=Number($('planAmount').value),saved=Number($('planSaved').value||0),start=$('planStart').value+'-01',end=$('planTarget').value+'-01';
+ if(end<start)throw Error('O mês do objetivo deve ser igual ou posterior ao início.');
+ const {data,error}=await sb.from('financial_plans').insert({title,target_amount:target,saved_amount:saved,start_month:start,target_month:end,description:$('planDescription').value||'',created_by:user.id}).select().single();
+ if(error)throw error;
+ const months=(new Date(end+'T12:00:00').getFullYear()-new Date(start+'T12:00:00').getFullYear())*12+new Date(end+'T12:00:00').getMonth()-new Date(start+'T12:00:00').getMonth()+1;
+ const monthly=Math.max(0,(target-saved)/months),cat=categories.find(c=>c.name==='SONHOS');
+ if(monthly>0&&cat){const rows=Array.from({length:months},(_,i)=>{const m=plusMonth(start,i);return {description:'RESERVA: '+title,amount:Math.round(monthly*100)/100,entry_type:'reserve',category_id:cat.id,due_date:m,month_ref:m,status:'pending',recurrence_type:'monthly',plan_id:data.id,created_by:user.id}});const {error:ee}=await sb.from('financial_entries').insert(rows);if(ee)throw ee}
+ $('planModal').classList.remove('open');await refresh();setView('plans');
+ }catch(err){showMsg('planMsg',err.message)}});
+function renderPlans(){
+ $('planList').innerHTML=plans.map(p=>{const months=(new Date(p.target_month+'T12:00:00').getFullYear()-new Date(p.start_month+'T12:00:00').getFullYear())*12+new Date(p.target_month+'T12:00:00').getMonth()-new Date(p.start_month+'T12:00:00').getMonth()+1;const per=Math.max(0,(Number(p.target_amount)-Number(p.saved_amount))/months);const pct=Math.min(100,Number(p.saved_amount)/Number(p.target_amount)*100);return '<div class="panel"><div class="row between"><div><h3 style="margin:0">'+esc(p.title)+'</h3><span class="muted small">'+monthName(p.target_month)+' · '+months+' mês(es)</span></div><b>'+money(p.target_amount)+'</b></div><p class="muted">Guardar aproximadamente '+money(per)+' por mês</p><div class="progress"><span style="width:'+pct+'%"></span></div><p class="muted small">Já reservado: '+money(p.saved_amount)+' ('+pct.toFixed(0)+'%)</p></div>'}).join('')||'<div class="panel empty">Nenhum planejamento cadastrado.</div>';
 }
-$('loginForm').onsubmit=async e=>{
- e.preventDefault();
- const btn=$('loginBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>VERIFICANDO ACESSO...';
- message('authMessage','VALIDANDO E-MAIL E SENHA...');
- let timeoutId;
- try{
-  const loginPromise=supabase.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});
-  const timeoutPromise=new Promise((_,reject)=>{timeoutId=setTimeout(()=>reject(new Error('TIMEOUT_LOGIN')),20000)});
-  const {data,error}=await Promise.race([loginPromise,timeoutPromise]);
-  clearTimeout(timeoutId);
-  if(error)throw error;
-  if(!data?.user)throw new Error('O SUPABASE NÃO RETORNOU UM USUÁRIO. VERIFIQUE O CADASTRO.');
-  message('authMessage','AUTENTICADO. CARREGANDO SEU PERFIL E AS TAREFAS...');
-  await start(data.user);
- }catch(err){
-  clearTimeout(timeoutId);
-  if(err?.message==='TIMEOUT_LOGIN')message('authMessage','TEMPO ESGOTADO: O SUPABASE NÃO RESPONDEU EM 20 SEGUNDOS. VERIFIQUE A CONEXÃO E TENTE NOVAMENTE.');
-  else message('authMessage',explainLoginError(err));
- }finally{btn.disabled=false;btn.textContent='Entrar'}
-};
-$('signupBtn').onclick=()=>{$('signupForm').reset();$('signupMessage').className='authNotice hidden full';$('signupMessage').textContent='';$('signupModal').classList.add('open');$('signupName').focus()};$('closeSignup').onclick=()=>{$('signupModal').classList.remove('open')};$('signupModal').onclick=e=>{if(e.target===$('signupModal'))$('signupModal').classList.remove('open')};$('signupForm').onsubmit=async e=>{e.preventDefault();const name=$('signupName').value.trim(),email=$('signupEmail').value.trim().toLowerCase(),password=$('signupPassword').value,confirm=$('signupConfirm').value;const box=$('signupMessage');box.className='authNotice full';if(!name){box.textContent='INFORME SEU NOME.';return}if(password.length<6){box.textContent='A SENHA DEVE TER PELO MENOS 6 CARACTERES.';return}if(password!==confirm){box.textContent='AS SENHAS NÃO CONFEREM.';return}const btn=$('createAccountBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>CRIANDO CONTA...';try{const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name}}});if(error)throw error;box.className='authNotice success full';box.textContent=data.session?'CONTA CRIADA. AGUARDE A LIBERAÇÃO DO ADMINISTRADOR.':'CADASTRO RECEBIDO. CONFIRME O E-MAIL, SE SOLICITADO, E AGUARDE A LIBERAÇÃO DO ADMINISTRADOR.';$('signupForm').reset()}catch(err){box.className='authNotice error full';box.textContent='NÃO FOI POSSÍVEL CRIAR A CONTA: '+(err.message||'ERRO DESCONHECIDO')}finally{btn.disabled=false;btn.textContent='Criar conta'}};
-async function start(u){user=u;if(!u){$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden');return}try{await loadData();$('authView').classList.add('hidden');$('appView').classList.remove('hidden');$('userbar').classList.remove('hidden')}catch(err){message('authMessage',err.message);$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('userbar').classList.add('hidden')}}
-$('forgotPassword').onclick=async()=>{const email=$('email').value.trim().toLowerCase();if(!email){message('authMessage','INFORME O E-MAIL DA CONTA ADMINISTRADORA.');$('email').focus();return}$('forgotPassword').disabled=true;$('forgotPassword').innerHTML='<span class="spinner"></span>ENVIANDO...';message('authMessage','');try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});if(error)throw error;message('authMessage','SOLICITAÇÃO PROCESSADA PELO SERVIDOR. SE O E-MAIL ESTIVER CADASTRADO, O LINK SERÁ ENVIADO. VERIFIQUE ENTRADA, SPAM E LIXEIRA. SE NÃO CHEGAR, O SERVIÇO DE E-MAIL DO PROJETO PRECISA SER VERIFICADO NO SUPABASE.')}catch(err){message('authMessage','ERRO AO SOLICITAR RECUPERAÇÃO: '+(err.message||'ERRO DESCONHECIDO'))}finally{$('forgotPassword').disabled=false;$('forgotPassword').textContent='Esqueci minha senha'}};
-$('recoveryForm').onsubmit=async e=>{e.preventDefault();message('recoveryMessage','');const p=$('newPassword').value,confirm=$('confirmPassword').value;if(p.length<6){message('recoveryMessage','A SENHA DEVE TER PELO MENOS 6 CARACTERES.');return}if(p!==confirm){message('recoveryMessage','AS SENHAS NÃO CONFEREM.');return}$('savePassword').disabled=true;const {error}=await supabase.auth.updateUser({password:p});$('savePassword').disabled=false;if(error){message('recoveryMessage','NÃO FOI POSSÍVEL ATUALIZAR: '+error.message);return}message('recoveryMessage','SENHA ATUALIZADA. VOCÊ JÁ PODE ENTRAR COM A NOVA SENHA.');$('recoveryForm').reset();$('recoveryPanel').classList.add('hidden');$('loginForm').classList.remove('hidden');$('forgotPassword').classList.remove('hidden');};
-$('logout').onclick=async()=>{await supabase.auth.signOut();user=null;profile=null;start(null)};
-supabase.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;profile=null;start(null)}if(event==='PASSWORD_RECOVERY'){$('loginForm').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('recoveryPanel').classList.remove('hidden')}});
-supabase.auth.getSession().then(({data,error})=>{if(error){message('authMessage','NÃO FOI POSSÍVEL VERIFICAR A SESSÃO: '+(error.message||'ERRO DESCONHECIDO'));return}if(!user)start(data.session?.user||null)}).catch(err=>message('authMessage','ERRO AO RESTAURAR A SESSÃO: '+(err.message||'ERRO DESCONHECIDO')));
+$('addCategory').onclick=async()=>{const name=$('newCategoryName').value.trim().toLocaleUpperCase('pt-BR');if(!name)return;const {error}=await sb.from('finance_categories').insert({name,category_type:$('newCategoryType').value,is_system:false,position:99});if(error)alert(error.message);else{$('newCategoryName').value='';await refresh()}};
+async function refresh(){const [e,p,c]=await Promise.all([sb.from('financial_entries').select('*').order('due_date'),sb.from('financial_plans').select('*').order('target_month'),sb.from('finance_categories').select('*').eq('active',true).order('position').order('name')]);for(const x of [e,p,c])if(x.error)throw x.error;entries=e.data||[];plans=p.data||[];categories=c.data||[];fillCategories();render()}
+function logout(){sb.auth.signOut()}
+$('logout').onclick=logout;
+$('loginForm').onsubmit=async ev=>{ev.preventDefault();$('loginBtn').disabled=true;showMsg('authMsg','Validando acesso...');try{const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim().toLowerCase(),password:$('password').value});if(error)throw error;user=data.user;await loadAll()}catch(err){showMsg('authMsg',err.message)}finally{$('loginBtn').disabled=false}};
+sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;$('app').classList.add('hidden');$('authView').classList.remove('hidden');$('logout').classList.add('hidden')}});
+sb.auth.getSession().then(async({data})=>{if(data.session){user=data.session.user;try{await loadAll()}catch(e){showMsg('authMsg',e.message)}}});
+let channel;function subscribe(){if(channel)sb.removeChannel(channel);channel=sb.channel('finance-live').on('postgres_changes',{event:'*',schema:'public',table:'financial_entries'},()=>refresh()).on('postgres_changes',{event:'*',schema:'public',table:'financial_plans'},()=>refresh()).on('postgres_changes',{event:'*',schema:'public',table:'finance_categories'},()=>refresh()).subscribe()}
+const oldLoad=loadAll; // subscribe after authenticated load
+const original=window.addEventListener;document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user)refresh()});
+sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'&&session){user=session.user;setTimeout(()=>{subscribe()},800)}});
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+let promptInstall;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptInstall=e;$('installBtn').classList.remove('hidden')});$('installBtn').onclick=async()=>{if(promptInstall){promptInstall.prompt();promptInstall=null}};
 })();
 </script>
 </body></html>

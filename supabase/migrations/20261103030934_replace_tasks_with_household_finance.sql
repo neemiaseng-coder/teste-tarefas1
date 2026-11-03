@@ -1,0 +1,55 @@
+begin;
+drop table if exists public.notifications cascade;
+drop table if exists public.task_dependencies cascade;
+drop table if exists public.task_history cascade;
+drop table if exists public.task_subtasks cascade;
+drop table if exists public.task_comments cascade;
+drop table if exists public.tasks cascade;
+drop table if exists public.team_members cascade;
+drop table if exists public.teams cascade;
+drop function if exists private.is_task_member(uuid) cascade;
+drop function if exists private.is_team_leader(uuid) cascade;
+drop function if exists private.is_team_member(uuid) cascade;
+update public.profiles set role='admin'::public.app_role,active=true,updated_at=now()
+where id in ('056ef42c-c953-42a9-8970-225b9a96710a'::uuid,'88caa2b0-e228-4771-bdd3-8aa33102b768'::uuid);
+create table public.finance_members(user_id uuid primary key references auth.users(id) on delete cascade,access_level text not null default 'master' check(access_level='master'),created_at timestamptz not null default now());
+insert into public.finance_members(user_id) values('056ef42c-c953-42a9-8970-225b9a96710a'),('88caa2b0-e228-4771-bdd3-8aa33102b768') on conflict(user_id) do update set access_level='master';
+create or replace function private.is_finance_member() returns boolean language sql stable security definer set search_path='' as $$ select exists(select 1 from public.finance_members fm where fm.user_id=(select auth.uid())); $$;
+revoke all on function private.is_finance_member() from public;
+grant execute on function private.is_finance_member() to authenticated;
+create table public.finance_categories(id uuid primary key default gen_random_uuid(),name text not null unique,category_type text not null default 'expense' check(category_type in('expense','income','reserve')),is_system boolean not null default true,active boolean not null default true,position integer not null default 0,created_at timestamptz not null default now());
+insert into public.finance_categories(name,category_type,position) values('FIXAS','expense',1),('VARIÁVEIS','expense',2),('ALIMENTAÇÃO','expense',3),('CARTÕES','expense',4),('EMPRÉSTIMOS','expense',5),('PARCELAMENTOS','expense',6),('DÍVIDAS','expense',7),('RESERVA EMERGÊNCIA','reserve',8),('INVESTIMENTO','reserve',9),('SONHOS','reserve',10),('RECEITAS','income',11) on conflict(name) do nothing;
+create table public.financial_plans(id uuid primary key default gen_random_uuid(),title text not null check(char_length(trim(title)) between 1 and 120),description text not null default '',target_amount numeric(14,2) not null check(target_amount>0),saved_amount numeric(14,2) not null default 0 check(saved_amount>=0),start_month date not null,target_month date not null,status text not null default 'active' check(status in('active','completed','paused')),created_by uuid not null references auth.users(id),created_at timestamptz not null default now(),updated_at timestamptz not null default now(),check(date_trunc('month',start_month)::date=start_month),check(date_trunc('month',target_month)::date=target_month),check(target_month>=start_month));
+create table public.financial_entries(id uuid primary key default gen_random_uuid(),description text not null check(char_length(trim(description)) between 1 and 180),amount numeric(14,2) not null check(amount>0),entry_type text not null default 'expense' check(entry_type in('expense','income','reserve')),category_id uuid references public.finance_categories(id) on delete restrict,due_date date not null,month_ref date not null,status text not null default 'pending' check(status in('pending','paid')),paid_at timestamptz,paid_by uuid references auth.users(id),recurrence_type text not null default 'once' check(recurrence_type in('once','monthly','installments')),series_id uuid,installment_number integer,installment_total integer,plan_id uuid references public.financial_plans(id) on delete set null,notes text not null default '',created_by uuid not null references auth.users(id),created_at timestamptz not null default now(),updated_at timestamptz not null default now(),check(date_trunc('month',month_ref)::date=month_ref),check((recurrence_type='installments' and series_id is not null and installment_number between 1 and installment_total and installment_total>=2) or (recurrence_type<>'installments' and installment_number is null and installment_total is null)),check((status='paid' and paid_at is not null) or status='pending'));
+create index financial_entries_month_idx on public.financial_entries(month_ref);
+create index financial_entries_due_idx on public.financial_entries(due_date);
+create index financial_entries_category_idx on public.financial_entries(category_id);
+create index financial_entries_series_idx on public.financial_entries(series_id);
+create index financial_entries_plan_idx on public.financial_entries(plan_id);
+create or replace function private.protect_paid_financial_entry() returns trigger language plpgsql set search_path='' as $$
+begin
+ if old.status='paid' and new.status='paid' and (new.description,new.amount,new.entry_type,new.category_id,new.due_date,new.month_ref,new.recurrence_type,new.series_id,new.installment_number,new.installment_total,new.plan_id,new.notes) is distinct from (old.description,old.amount,old.entry_type,old.category_id,old.due_date,old.month_ref,old.recurrence_type,old.series_id,old.installment_number,old.installment_total,old.plan_id,old.notes) then raise exception 'Para alterar uma conta paga, desfaça o pagamento primeiro.'; end if;
+ if new.status='paid' and old.status<>'paid' then new.paid_at:=coalesce(new.paid_at,now());new.paid_by:=coalesce(new.paid_by,(select auth.uid())); elsif new.status='pending' then new.paid_at:=null;new.paid_by:=null; end if;
+ new.updated_at:=now();return new;
+end;$$;
+create trigger financial_entries_protect_paid before update on public.financial_entries for each row execute function private.protect_paid_financial_entry();
+create or replace function private.set_financial_plan_updated_at() returns trigger language plpgsql set search_path='' as $$ begin new.updated_at:=now();return new;end;$$;
+create trigger financial_plans_updated_at before update on public.financial_plans for each row execute function private.set_financial_plan_updated_at();
+alter table public.finance_members enable row level security;
+alter table public.finance_categories enable row level security;
+alter table public.financial_plans enable row level security;
+alter table public.financial_entries enable row level security;
+create policy "finance members read household" on public.finance_members for select to authenticated using(private.is_finance_member());
+create policy "finance categories shared access" on public.finance_categories for all to authenticated using(private.is_finance_member()) with check(private.is_finance_member());
+create policy "financial plans shared access" on public.financial_plans for all to authenticated using(private.is_finance_member()) with check(private.is_finance_member());
+create policy "financial entries shared access" on public.financial_entries for all to authenticated using(private.is_finance_member()) with check(private.is_finance_member());
+grant select on public.finance_members to authenticated;
+grant select,insert,update,delete on public.finance_categories to authenticated;
+grant select,insert,update,delete on public.financial_plans to authenticated;
+grant select,insert,update,delete on public.financial_entries to authenticated;
+do $$ begin
+ if not exists(select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='financial_entries') then alter publication supabase_realtime add table public.financial_entries; end if;
+ if not exists(select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='financial_plans') then alter publication supabase_realtime add table public.financial_plans; end if;
+ if not exists(select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='finance_categories') then alter publication supabase_realtime add table public.finance_categories; end if;
+end $$;
+commit;

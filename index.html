@@ -111,7 +111,7 @@ function render(){
  const reserve=list.filter(x=>x.entry_type==='reserve').reduce((a,x)=>a+Number(x.amount),0);
  const paid=list.filter(x=>x.status==='paid').reduce((a,x)=>a+Number(x.amount),0);
  const pending=list.filter(x=>x.status==='pending').reduce((a,x)=>a+Number(x.amount),0);
- $('stats').innerHTML=[['Receitas previstas',money(income)],['Despesas previstas',money(expense)],['Já pago / reservado',money(paid)],['Saldo previsto',money(income-expense-reserve)]].map(x=>'<div class="stat"><span class="muted">'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join('');
+ $('stats').innerHTML=[['Receitas previstas',money(income)],['Despesas previstas',money(expense)],['Despesas pagas',money(list.filter(x=>x.entry_type==='expense'&&x.status==='paid').reduce((a,x)=>a+Number(x.amount),0))],['Saldo previsto',money(income-expense-reserve)]].map(x=>'<div class="stat"><span class="muted">'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join('');
  $('dashEntries').innerHTML=list.slice().sort((a,b)=>a.due_date.localeCompare(b.due_date)).slice(0,8).map(entryHTML).join('')||'<div class="empty">Nenhum lançamento neste mês.</div>';
  $('forecast').innerHTML=Array.from({length:4},(_,i)=>{const m=plusMonth(s,i+1),a=monthEntries(m),inc=a.filter(x=>x.entry_type==='income').reduce((n,x)=>n+Number(x.amount),0),out=a.filter(x=>x.entry_type!=='income').reduce((n,x)=>n+Number(x.amount),0);return '<div class="entry"><div><b>'+monthName(m)+'</b><div class="muted small">Receitas '+money(inc)+'</div></div><b>'+money(inc-out)+'</b></div>'}).join('');
  renderEntries();

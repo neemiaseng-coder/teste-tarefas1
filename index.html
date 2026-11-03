@@ -206,7 +206,7 @@ const titleCaseGroup=value=>String(value||'').toLocaleLowerCase('pt-BR').replace
 function fillCategories(){
  const options=categories.map(c=>'<option value="'+c.id+'">'+esc(titleCaseGroup(c.name))+'</option>').join('');
  $('categoryId').innerHTML='<option value="">Sem grupo por enquanto</option>'+options;if($('filterCategory'))$('filterCategory').innerHTML='<option value="">Todos os grupos</option>'+options;
- $('categoryChips').innerHTML=categories.map(c=>'<button type="button" class="category-chip" data-category="'+c.id+'"'> '+esc(titleCaseGroup(c.name))+'</button>').join('');
+ $('categoryChips').innerHTML=categories.map(c=>'<button type="button" class="category-chip" data-category="'+c.id+'">'+esc(titleCaseGroup(c.name))+'</button>').join('');
  $('categoryList').innerHTML=categories.map(c=>'<div class="entry category-row"><span><b>'+esc(titleCaseGroup(c.name))+'</b> <span class="pill">'+c.category_type+'</span><small class="muted category-origin">'+(c.is_system?'Padrão':'Personalizado')+'</small></span><button type="button" class="secondary" data-category-edit="'+c.id+'">Renomear</button></div>').join('');
 }
 function monthEntries(s){return entries.filter(e=>e.month_ref===s)}

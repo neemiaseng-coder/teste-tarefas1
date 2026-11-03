@@ -170,7 +170,7 @@ const plusMonth=(s,n)=>{const d=new Date(s+'T12:00:00');d.setMonth(d.getMonth()+
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const monthName=s=>new Date(s+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
 function showMsg(id,s){$(id).textContent=s||''}
-const THEMES={inter:['#E86F12','#F2A15B','#F8F6F2','#FFFFFF','#292929','Inter, system-ui, sans-serif'],nubank:['#7026A6','#9B69BD','#F7F4F9','#FFFFFF','#29232F','Inter, system-ui, sans-serif'],bradesco:['#B51E38','#D66A7A','#FAF5F5','#FFFFFF','#302529','Arial, sans-serif'],pan:['#D96F1B','#E9A064','#FAF6F1','#FFFFFF','#302820','Inter, system-ui, sans-serif'],bb:['#174A9C','#E5B923','#F4F7FB','#FFFFFF','#202A38','Inter, system-ui, sans-serif']};
+const THEMES={inter:['#E86F12','#F2A15B','#F8F6F2','#FFFFFF','#292929','Inter, system-ui, sans-serif'],nubank:['#7026A6','#9B69BD','#F7F4F9','#FFFFFF','#29232F','Inter, system-ui, sans-serif'],bradesco:['#B51E38','#D66A7A','#FAF5F5','#FFFFFF','#302529','Arial, sans-serif'],pan:['#0066B3','#4A9BD6','#F1F7FC','#FFFFFF','#202B36','Inter, system-ui, sans-serif'],bb:['#174A9C','#E5B923','#F4F7FB','#FFFFFF','#202A38','Inter, system-ui, sans-serif']};
 const headerDateEl=$('headerDate');if(headerDateEl)headerDateEl.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 async function applyPreferences(){
  const t=THEMES[preferences?.theme_key]||THEMES.inter,root=document.documentElement;const primary=t[0],accent=t[1];

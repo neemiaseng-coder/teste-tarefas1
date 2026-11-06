@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';import '../js/installments.js';
+const summarize=globalThis.FinanceInstallments.summarize;
+const row=(n,status='pending',extra={})=>({id:String(n),series_id:'s',recurrence_type:'installments',amount:100,installment_number:n,installment_total:4,due_date:'2026-'+String(n+1).padStart(2,'0')+'-10',status,...extra});
+test('sums actual payments without inferring missing earlier installments',()=>{const [s]=summarize([row(3),row(4)]);assert.equal(s.paidAmount,0);assert.equal(s.remaining,20000);assert.equal(s.paidPercent,0);assert.equal(s.registeredCount,2);assert.equal(s.declaredCount,4)});
+test('progress uses amounts, not installment number or count',()=>{const [s]=summarize([row(1,'paid',{amount:200}),row(2),row(3)]);assert.equal(s.paidPercent,50);assert.equal(s.paidCount,1);assert.equal(s.pendingCount,2);assert.equal(s.next.installment_number,2)});
+test('paid series disappear and unrelated entries are excluded',()=>{assert.deepEqual(summarize([row(1,'paid'),row(2,'pending',{recurrence_type:'once'})]),[])});
+test('next pending follows due date and summaries do not mutate source',()=>{const rows=[row(3),row(1,'pending',{due_date:'2026-12-10'})];const before=JSON.stringify(rows);assert.equal(summarize(rows)[0].next.installment_number,3);assert.equal(JSON.stringify(rows),before)});
+test('separate series and decimal amounts stay separate in cents',()=>{const s=summarize([row(1,'paid',{amount:0.1}),row(2,'pending',{amount:0.2}),row(1,'pending',{id:'other',series_id:'other',amount:50})]);assert.equal(s.length,2);const first=s.find(x=>x.registeredCount===2);assert.equal(first.total,30);assert.equal(first.remaining,20)});

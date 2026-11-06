@@ -51,3 +51,9 @@ button{background:var(--brand-safe)}.bottom-nav button{background:transparent}.b
 @media(max-width:420px){.installment-detail{padding:18px;border-radius:18px}.installment-overview{padding:20px}.installment-overview strong{font-size:29px}.installment-visual{gap:20px;justify-content:space-between}.installment-donut{width:120px;height:120px}.installment-donut>div{width:94px;height:94px}.installment-donut strong{font-size:23px}.installment-legend strong{font-size:18px}.installment-next{padding:13px}.installment-heading h3{font-size:16px}}
 @media(max-width:340px){.installment-visual{flex-direction:column;gap:20px}.installment-legend{display:flex;justify-content:space-between;gap:16px;width:100%}.installment-legend>div+div{margin-top:0}.installment-legend strong{font-size:16px}}
 @media(max-width:600px){.analytics-filters .field{flex-basis:100%;min-width:0}}
+
+/* Keep the fixed menu outside the content's scrollable viewport. */
+body:has(#app:not(.hidden)){height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding-bottom:0}
+body:has(#app:not(.hidden))>.app-header{flex:none}
+body:has(#app:not(.hidden))>main{flex:1;min-height:0;width:100%;overflow-y:auto;overscroll-behavior-y:contain;scroll-padding-block:24px;margin:0 auto calc(108px + env(safe-area-inset-bottom));padding-top:28px;padding-bottom:24px}
+@media(max-width:760px){body:has(#app:not(.hidden))>main{margin-bottom:calc(96px + env(safe-area-inset-bottom));padding-top:24px;padding-bottom:20px}}

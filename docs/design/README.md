@@ -16,7 +16,7 @@ Histórico incompleto é identificado; o progresso usa apenas registros disponí
 Privacidade oculta valores e proporções de ambos os dashboards.
 
 Arquivos principais: index.html, styles/banking.css, js/analytics.js,
-js/installments.js e sw.js (cache v37 com os dois módulos e o CSS em CORE).
+js/installments.js e sw.js (cache v38 com os dois módulos e o CSS em CORE).
 Sem mudança em autenticação, formulários, pagamentos, schema ou dados do banco.
 Mudanças JavaScript adicionais limitadas à apresentação de parcelamentos.
 
@@ -28,3 +28,8 @@ Capturas nesta pasta são demonstrativas, sem dados reais.
 Não executados: login real, aparelhos físicos e atualização do PWA instalado.
 Não publicado. Ao integrar o ícone (#2), preservar todos os assets do CORE e
 incrementar o cache. Não aplicar novamente o PR #1 após esta revisão.
+
+Menu fixo: área de conteúdo com rolagem própria termina acima da navegação.
+Verificado geometricamente em Chromium em 1440/390/320 px: limite inferior do
+conteúdo menor que o topo do menu, que permanece position:fixed. A troca de
+tela retorna a rolagem do conteúdo ao início.

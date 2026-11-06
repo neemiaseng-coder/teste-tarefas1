@@ -1,5 +1,5 @@
-const CACHE='financeiro-familiar-v39';
-const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./styles/banking.css','./js/analytics.js','./js/installments.js'];
+const CACHE='financeiro-familiar-v40';
+const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./styles/banking.css','./js/analytics.js','./js/installments.js','./js/ui-icons.js'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{

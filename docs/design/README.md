@@ -16,7 +16,7 @@ Histórico incompleto é identificado; o progresso usa apenas registros disponí
 Privacidade oculta valores e proporções de ambos os dashboards.
 
 Arquivos principais: index.html, styles/banking.css, js/analytics.js,
-js/installments.js e sw.js (cache v39 com os dois módulos e o CSS em CORE).
+js/installments.js e sw.js (cache v40 com os dois módulos e o CSS em CORE).
 Sem mudança em autenticação, formulários, pagamentos, schema ou dados do banco.
 Mudanças JavaScript adicionais limitadas à apresentação de parcelamentos.
 
@@ -39,3 +39,11 @@ configurações; busca com lupa, perfil destacado e gradiente ligado ao tema.
 Mudanças apenas no CSS; ações e rótulos acessíveis preservados. Ajuda,
 configurações, busca e privacidade verificados em Chromium nos três tamanhos.
 Prévia demonstrativa em cabecalho.png.
+
+Ícones SVG locais centralizados em js/ui-icons.js: menu inicial, navegação,
+ações rápidas, categorias, indicadores analíticos, parcelamentos, formulários,
+login e bloqueio biométrico. Sem biblioteca externa ou alteração de dados.
+SVGs decorativos têm aria-hidden e focusable=false; nomes dos controles mantidos.
+Setas de mês receberam nomes acessíveis. Ícones de senha acompanham seu estado.
+Verificados também navegação, modal e mostrar/ocultar senha em três tamanhos.
+Novas capturas não anexadas ao GitHub: envio bloqueado pela revisão automática.

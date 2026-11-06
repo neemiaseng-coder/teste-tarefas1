@@ -16,7 +16,7 @@ Histórico incompleto é identificado; o progresso usa apenas registros disponí
 Privacidade oculta valores e proporções de ambos os dashboards.
 
 Arquivos principais: index.html, styles/banking.css, js/analytics.js,
-js/installments.js e sw.js (cache v38 com os dois módulos e o CSS em CORE).
+js/installments.js e sw.js (cache v39 com os dois módulos e o CSS em CORE).
 Sem mudança em autenticação, formulários, pagamentos, schema ou dados do banco.
 Mudanças JavaScript adicionais limitadas à apresentação de parcelamentos.
 
@@ -33,3 +33,9 @@ Menu fixo: área de conteúdo com rolagem própria termina acima da navegação.
 Verificado geometricamente em Chromium em 1440/390/320 px: limite inferior do
 conteúdo menor que o topo do menu, que permanece position:fixed. A troca de
 tela retorna a rolagem do conteúdo ao início.
+
+Cabeçalho: novos ícones em duas cores para notificações, privacidade, ajuda e
+configurações; busca com lupa, perfil destacado e gradiente ligado ao tema.
+Mudanças apenas no CSS; ações e rótulos acessíveis preservados. Ajuda,
+configurações, busca e privacidade verificados em Chromium nos três tamanhos.
+Prévia demonstrativa em cabecalho.png.

@@ -46,4 +46,4 @@ login e bloqueio biométrico. Sem biblioteca externa ou alteração de dados.
 SVGs decorativos têm aria-hidden e focusable=false; nomes dos controles mantidos.
 Setas de mês receberam nomes acessíveis. Ícones de senha acompanham seu estado.
 Verificados também navegação, modal e mostrar/ocultar senha em três tamanhos.
-Novas capturas não anexadas ao GitHub: envio bloqueado pela revisão automática.
+Capturas demonstrativas autorizadas pelo usuário: icones-menu.png e icones-formulario.png. Usam dados fictícios.

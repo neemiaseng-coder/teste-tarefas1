@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import '../js/upcoming.js';
+const {select,todayKey}=globalThis.FinanceUpcoming;const now=new Date('2026-11-07T15:00:00Z');const row=(date,extra={})=>({id:date,due_date:date,description:'Conta',entry_type:'expense',status:'pending',amount:100,...extra});
+test('includes today and day 10; excludes day 11',()=>{const r=select([row('2026-11-07'),row('2026-11-17'),row('2026-11-18')],now);assert.equal(r.end,'2026-11-17');assert.deepEqual(r.upcoming.map(x=>x.days),[0,10])});
+test('shows all overdue pending expenses and excludes paid/income/reserves',()=>{const r=select([row('2026-02-10'),row('2026-11-06'),row('2026-11-05',{status:'paid'}),row('2026-11-08',{entry_type:'income'}),row('2026-11-08',{entry_type:'reserve'})],now);assert.equal(r.overdue.length,2);assert.equal(r.upcoming.length,0)});
+test('crosses month and year independently of selected month',()=>{const r=select([row('2027-01-06'),row('2027-01-07')],new Date('2026-12-27T15:00:00Z'));assert.equal(r.today,'2026-12-27');assert.equal(r.end,'2027-01-06');assert.equal(r.upcoming.length,1)});
+test('today follows São Paulo rather than the UTC date',()=>{assert.equal(todayKey(new Date('2026-11-07T01:00:00Z')),'2026-11-06')});
+test('does not truncate the list or mutate source entries',()=>{const rows=Array.from({length:15},(_,i)=>row('2026-11-08',{id:String(i)})),before=JSON.stringify(rows);assert.equal(select(rows,now).upcoming.length,15);assert.equal(JSON.stringify(rows),before)});

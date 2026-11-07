@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import '../js/schedule.js';
+const s=globalThis.FinanceSchedule;
+test('remaining installments use current and declared total',()=>{assert.deepEqual(s.installment(3,10),{first:3,total:10,count:8});for(const pair of [[1,1],[1,2.5],[4,3],[0,10],[1,121]])assert.throws(()=>s.installment(...pair))});
+test('four-month recurrence starts in November and skips intervening months',()=>{assert.deepEqual(s.recurringDates('2026-11-10',4),['2026-11-10','2027-03-10','2027-07-10','2027-11-10','2028-03-10','2028-07-10']);assert.equal(s.recurringDates('2026-11-10',1).length,24);assert.throws(()=>s.interval(0));assert.throws(()=>s.interval(1.5))});
+test('month shifts clamp without overflow and preserve anchor day',()=>{assert.equal(s.shiftMonth('2028-01-31',1),'2028-02-29');assert.equal(s.shiftMonth('2027-01-31',1),'2027-02-28');assert.equal(s.shiftMonth('2027-01-31',2),'2027-03-31');assert.equal(s.shiftMonth('2027-01-31',-1),'2026-12-31')});

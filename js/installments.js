@@ -4,11 +4,18 @@
  const title=value=>String(value||'').replace(/\s*\(\d+\/\d+\)\s*$/,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/\bnubanck\b/g,'nubank');
  const month=value=>{const [year,m]=String(value).slice(0,7).split('-').map(Number);return year*12+m-1};
  function sameTitle(a,b){if(a===b)return true;if(Math.min(a.length,b.length)<16||Math.abs(a.length-b.length)>1)return false;let i=0,j=0,differences=0;while(i<a.length&&j<b.length){if(a[i]===b[j]){i++;j++;continue}if(++differences>1)return false;if(a.length>=b.length)i++;if(b.length>=a.length)j++}return differences+(a.length-i)+(b.length-j)<=1;}
- function reconcile(entries){
+ function reconcile(entries,links=null){
   const grouped=new Map();
   entries.filter(e=>e.recurrence_type==='installments').forEach(e=>{const key=e.series_id||e.id;if(!grouped.has(key))grouped.set(key,{key,current:[],history:[],review:[]});grouped.get(key).current.push(e)});
   const groups=[...grouped.values()];
   groups.forEach(g=>{g.anchor=[...g.current].sort((a,b)=>a.due_date.localeCompare(b.due_date))[0];g.name=title(g.anchor.description);g.declared=Math.max(...g.current.map(e=>Number(e.installment_total)||0));const offsets=new Set(g.current.map(e=>month(e.due_date)-Number(e.installment_number)));g.offset=offsets.size===1?[...offsets][0]:null;g.slots=new Set(g.current.map(e=>Number(e.installment_number)));});
+  if(Array.isArray(links)){
+   const byId=new Map(entries.map(e=>[e.id,e]));
+   links.forEach(link=>{const g=grouped.get(link.series_id),row=byId.get(link.entry_id);if(g&&row&&row.recurrence_type!=='installments'&&!g.slots.has(Number(link.installment_number)))g.history.push({...row,installment_number:Number(link.installment_number),installment_total:g.declared});});
+   const linkedIds=new Set(links.map(link=>link.entry_id));
+   entries.filter(e=>e.recurrence_type!=='installments'&&!linkedIds.has(e.id)&&String(e.notes||'').includes('IMPORT_GRANNA_2026_FEV_OUT_V1')).forEach(e=>groups.filter(g=>e.entry_type===g.anchor.entry_type&&e.due_date<g.anchor.due_date&&sameTitle(title(e.description),g.name)).forEach(g=>g.review.push(e)));
+   return groups;
+  }
   const suggestions=[];
   entries.filter(e=>e.recurrence_type!=='installments'&&String(e.notes||'').includes('IMPORT_GRANNA_2026_FEV_OUT_V1')).forEach(e=>{
    const names=groups.filter(g=>e.entry_type===g.anchor.entry_type&&e.due_date<g.anchor.due_date&&sameTitle(title(e.description),g.name));
@@ -19,7 +26,7 @@
   suggestions.forEach(s=>{if(slotCounts.get(s.group.key+':'+s.number)!==1){s.group.review.push(s.entry);return}s.group.history.push({...s.entry,installment_number:s.number,installment_total:s.group.declared})});
   return groups;
  }
- function summarize(entries){return reconcile(entries).map(g=>{
+ function summarize(entries,links=null){return reconcile(entries,links).map(g=>{
   const rows=g.current.concat(g.history),pending=rows.filter(e=>e.status==='pending').sort((a,b)=>a.due_date.localeCompare(b.due_date)||(a.installment_number||0)-(b.installment_number||0)),paid=rows.filter(e=>e.status==='paid'),sum=list=>list.reduce((n,e)=>n+cents(e.amount),0),paidAmount=sum(paid),remaining=sum(pending),total=paidAmount+remaining;
   return {title:String(g.anchor.description||'Parcelamento').replace(/\s*\(\d+\/\d+\)\s*$/,''),next:pending[0],paidCount:paid.length,pendingCount:pending.length,registeredCount:rows.length,declaredCount:Math.max(rows.length,g.declared),paidAmount,remaining,total,paidPercent:total?paidAmount/total*100:0,historyCount:g.history.length,historyRows:g.history.sort((a,b)=>a.due_date.localeCompare(b.due_date)),reviewCount:g.review.length,reviewRows:g.review.sort((a,b)=>a.due_date.localeCompare(b.due_date))};
  }).filter(s=>s.next).sort((a,b)=>a.next.due_date.localeCompare(b.next.due_date));}

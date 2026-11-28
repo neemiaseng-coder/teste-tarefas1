@@ -117,27 +117,40 @@ nav button{font-size:12px}
 </style>
 <style>
 .analytics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}.analytics-card{padding:18px;border:1px solid #dce3df;border-radius:16px;background:var(--card,#fff)}.analytics-card strong{display:block;font-size:1.3rem;margin-top:8px}.analytics-bar{height:10px;border-radius:8px;background:var(--green);min-width:0}.analytics-row{display:grid;grid-template-columns:minmax(90px,1fr) 2fr minmax(90px,1fr);gap:12px;align-items:center;margin:14px 0}.analytics-row span:last-child{text-align:right}.analytics-table{width:100%;border-collapse:collapse;white-space:nowrap}.analytics-table th,.analytics-table td{padding:12px;text-align:right;border-bottom:1px solid #dce3df}.analytics-table th:first-child,.analytics-table td:first-child{text-align:left}.analytics-scroll{overflow-x:auto}.analytics-filters{display:flex;gap:12px;flex-wrap:wrap}.analytics-filters .field{flex:1;min-width:150px}
-</style><script src="./js/ui-icons.js?v=18.0.11"></script><script src="./js/navigation.js?v=18.0.11"></script><script src="./js/schedule.js?v=18.0.11"></script><script src="./js/upcoming.js?v=18.0.11"></script><script src="./js/goals.js?v=18.0.11"></script><script src="./js/analytics.js?v=18.0.11"></script><script src="./js/installments.js?v=18.0.11"></script><link rel="stylesheet" href="./styles/banking.css?v=18.0.11"><link rel="stylesheet" href="./styles/pro.css?v=18.0.11">
+</style><script src="./js/ui-icons.js?v=18.0.11"></script><script src="./js/navigation.js?v=18.0.11"></script><script src="./js/schedule.js?v=18.0.11"></script><script src="./js/upcoming.js?v=18.0.11"></script><script src="./js/goals.js?v=18.0.11"></script><script src="./js/analytics.js?v=18.0.11"></script><script src="./js/installments.js?v=18.0.11"></script><link rel="stylesheet" href="./styles/banking.css?v=18.0.11"><link rel="stylesheet" href="./styles/pro.css?v=18.0.12">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <script src="./js/app-update.js?v=18.0.11" defer></script>
 <script src="./js/header-ui.js?v=18.0.11" defer></script>
 <style id="lunex-intro-styles">
-#lunex-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 42%,#102a50 0%,#07172f 48%,#040c1b 100%);color:#f4f7ff;overflow:hidden;pointer-events:all;transition:opacity .38s ease}
+@font-face{font-family:"Figtree";src:url("./fonts/figtree.woff2") format("woff2");font-weight:300 900;font-display:swap}
+#lunex-intro{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;overflow:hidden;color:#f4f7ff;background:radial-gradient(ellipse 90% 60% at 50% 46%,#123a7a 0%,#071a3d 38%,#020611 72%,#000 100%);transition:opacity .38s ease;isolation:isolate}
 #lunex-intro *{box-sizing:border-box}
-#lunex-intro .lunex-stage{display:flex;flex-direction:column;align-items:center;gap:16px;animation:lunex-stage 3.5s ease both}
-#lunex-intro .lunex-word{display:flex;align-items:center;justify-content:center;height:115px;font:700 clamp(64px,13vw,112px)/1 Arial,Helvetica,sans-serif;letter-spacing:-.085em}
-#lunex-intro .lunex-l{color:#f3f6fc;animation:lunex-l 3.5s cubic-bezier(.22,.75,.18,1) both}
-#lunex-intro .lunex-x{color:#4d91fb;animation:lunex-x 3.5s cubic-bezier(.22,.75,.18,1) both}
-#lunex-intro .lunex-middle{display:inline-block;max-width:0;opacity:0;white-space:nowrap;overflow:hidden;color:#f3f6fc;animation:lunex-middle 3.5s cubic-bezier(.22,.75,.18,1) both}
-#lunex-intro .lunex-tagline{font:500 clamp(8px,1.7vw,12px)/1.5 Arial,Helvetica,sans-serif;letter-spacing:.26em;text-align:center;text-transform:uppercase;opacity:0;animation:lunex-tag 3.5s ease both}
-#lunex-intro.lunex-done{opacity:0;pointer-events:none}
-@keyframes lunex-l{0%,30%{transform:translateX(24px)}52%,100%{transform:translateX(0)}}
-@keyframes lunex-x{0%,30%{transform:translateX(-24px)}52%,100%{transform:translateX(0)}}
-@keyframes lunex-middle{0%,31%{max-width:0;opacity:0}58%,100%{max-width:360px;opacity:1}}
-@keyframes lunex-tag{0%,62%{opacity:0;transform:translateY(8px)}82%,100%{opacity:1;transform:translateY(0)}}
-@keyframes lunex-stage{0%{opacity:0;transform:scale(.97)}15%,100%{opacity:1;transform:scale(1)}}
-@media(prefers-reduced-motion:reduce){#lunex-intro *{animation-duration:.01ms!important}#lunex-intro .lunex-middle{max-width:360px;opacity:1}#lunex-intro .lunex-tagline{opacity:1}}
+#lunex-intro::before{content:"";position:absolute;z-index:-1;left:-60%;right:-60%;bottom:-8%;height:52%;background:repeating-linear-gradient(90deg,#4d91fb40 0 1px,transparent 1px 72px),repeating-linear-gradient(0deg,#4d91fb40 0 1px,transparent 1px 46px);transform:perspective(420px) rotateX(63deg);transform-origin:bottom;-webkit-mask:linear-gradient(transparent,#000 75%);mask:linear-gradient(transparent,#000 75%);animation:lx-floor 3.5s linear both}
+#lunex-intro::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,#fff 0%,#8fc0ff99 14%,transparent 48%);opacity:0;animation:lx-flash 3.5s ease-out both}
+#lunex-intro .lunex-stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:22px;animation:lx-stage 3.5s cubic-bezier(.2,.8,.2,1) both}
+#lunex-intro .lunex-stage::before,#lunex-intro .lunex-stage::after{content:"";position:absolute;left:50%;top:50%;width:140px;height:140px;margin:-70px;border-radius:50%;border:2px solid #7db4ff;opacity:0;pointer-events:none;animation:lx-ring 3.5s cubic-bezier(.1,.7,.3,1) both}
+#lunex-intro .lunex-stage::after{border-width:1px;animation-delay:.16s}
+#lunex-intro .lunex-word{position:relative;display:flex;align-items:center;justify-content:center;font:900 clamp(66px,19vw,196px)/1.05 "Figtree",system-ui,sans-serif;letter-spacing:-.055em;filter:drop-shadow(0 0 28px #2f7df780) drop-shadow(0 18px 30px #000a)}
+#lunex-intro .lunex-word::after{content:"";position:absolute;left:-12%;right:-12%;bottom:-8px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#4d91fb 25%,#fff 50%,#4d91fb 75%,transparent);box-shadow:0 0 24px 3px #4d91fbaa;transform:scaleX(0);animation:lx-line 3.5s cubic-bezier(.2,.8,.2,1) both}
+#lunex-intro .lunex-l,#lunex-intro .lunex-middle,#lunex-intro .lunex-x{display:inline-block;padding:0 .015em;background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;background-size:100% 100%}
+#lunex-intro .lunex-l,#lunex-intro .lunex-middle{background-image:linear-gradient(180deg,#fff 18%,#cfdcf2 52%,#8fa6cc 56%,#f4f8ff 92%)}
+#lunex-intro .lunex-x{background-image:linear-gradient(180deg,#b9d8ff 8%,#4d91fb 48%,#1450c8 56%,#6fb0ff 95%)}
+#lunex-intro .lunex-l{position:relative;z-index:2;animation:lx-l 3.5s cubic-bezier(.16,.9,.2,1) both}
+#lunex-intro .lunex-x{position:relative;z-index:2;animation:lx-x 3.5s cubic-bezier(.16,.9,.2,1) both}
+#lunex-intro .lunex-middle{max-width:0;opacity:0;overflow:hidden;white-space:nowrap;animation:lx-mid 3.5s cubic-bezier(.2,.8,.2,1) both}
+#lunex-intro .lunex-tagline{font:600 clamp(10px,1.8vw,15px)/1.6 "Figtree",system-ui,sans-serif;letter-spacing:.46em;padding-left:.46em;text-transform:uppercase;text-align:center;color:#c4d8f8;opacity:0;animation:lx-tag 3.5s ease both}
+@keyframes lx-l{0%{opacity:0;transform:translateX(-60vw) skewX(-18deg) scale(1.5)}20%{opacity:1;transform:translateX(.04em) skewX(0) scale(1.06)}26%,100%{opacity:1;transform:none}}
+@keyframes lx-x{0%{opacity:0;transform:translateX(60vw) skewX(18deg) scale(1.5)}20%{opacity:1;transform:translateX(-.04em) skewX(0) scale(1.06)}26%,100%{opacity:1;transform:none}}
+@keyframes lx-mid{0%,34%{max-width:0;opacity:0}58%,100%{max-width:3.2em;opacity:1}}
+@keyframes lx-flash{0%,18%{opacity:0}22%{opacity:.85}40%,100%{opacity:0}}
+@keyframes lx-ring{0%,19%{opacity:0;transform:scale(.2)}22%{opacity:.9}55%,100%{opacity:0;transform:scale(9)}}
+@keyframes lx-stage{0%{transform:scale(1)}20%{transform:scale(1)}23%{transform:scale(1.07) translateY(4px)}30%{transform:scale(1)}88%{transform:scale(1.045);opacity:1}100%{transform:scale(1.16);opacity:1}}
+@keyframes lx-line{0%,48%{transform:scaleX(0)}70%,100%{transform:scaleX(1)}}
+@keyframes lx-tag{0%,60%{opacity:0;transform:translateY(14px);letter-spacing:.8em}80%,100%{opacity:1;transform:none;letter-spacing:.46em}}
+@keyframes lx-floor{from{background-position:0 0,0 0}to{background-position:0 0,0 184px}}
+@media(prefers-reduced-motion:reduce){#lunex-intro::before,#lunex-intro::after,#lunex-intro *,#lunex-intro *::before,#lunex-intro *::after{animation:none!important}#lunex-intro .lunex-middle{max-width:3.2em;opacity:1}#lunex-intro .lunex-tagline{opacity:1}#lunex-intro .lunex-word::after{transform:none}}
+#lunex-intro{pointer-events:all}#lunex-intro.lunex-done{opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
@@ -197,7 +210,7 @@ const plusMonth=(s,n)=>{const d=new Date(s+'T12:00:00');d.setMonth(d.getMonth()+
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const monthName=s=>new Date(s+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
 function showMsg(id,s){$(id).textContent=s||''}
-const THEMES={inter:['#E86F12','#F2A15B','#F8F6F2','#FFFFFF','#292929','Inter, system-ui, sans-serif'],nubank:['#7026A6','#9B69BD','#F7F4F9','#FFFFFF','#29232F','Inter, system-ui, sans-serif'],bradesco:['#B51E38','#D66A7A','#FAF5F5','#FFFFFF','#302529','Arial, sans-serif'],pan:['#0066B3','#4A9BD6','#F1F7FC','#FFFFFF','#202B36','Inter, system-ui, sans-serif'],bb:['#F2C500','#174A9C','#FFFBE8','#FFFFFF','#292719','Inter, system-ui, sans-serif']};
+const F='Figtree, system-ui, sans-serif';const THEMES={inter:['#FF7A00','#FF9D42','#FFF7F0','#FFFFFF','#161616',F],nubank:['#820AD1','#A64CE0','#F6F0FA','#FFFFFF','#1F002F',F],bradesco:['#CC092F','#E4435F','#FBF3F4','#FFFFFF','#2B1217',F],pan:['#00AEEF','#33C1F3','#EFF9FE','#FFFFFF','#06283A',F],bb:['#FCEB00','#0038A8','#FFFDE8','#FFFFFF','#00205B',F]};
 const STORED_THEMES={inter:'forest',nubank:'lavender',bradesco:'marsala',pan:'ocean',bb:'dark'};
 const displayTheme=key=>THEMES[key]?key:Object.keys(STORED_THEMES).find(name=>STORED_THEMES[name]===key)||'inter';
 const headerDateEl=$('headerDate');if(headerDateEl)headerDateEl.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});

@@ -66,3 +66,76 @@ body:not(:has(#app:not(.hidden))) .app-header{background:transparent!important;b
  .start-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
  #dashboard{max-width:1000px}
 }
+
+/* ===== Fonte única dos sistemas ===== */
+@font-face{font-family:"Figtree";src:url("../fonts/figtree.woff2") format("woff2");font-weight:300 900;font-display:swap}
+html:root,html body,html body *{font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif!important}
+
+/* ===== Temas com as cores de cada banco ===== */
+html:root{--bar:#FF7A00;--bar-ink:#fff;--cta:#FF7A00;--cta-ink:#fff;--link:#b45400}
+html:root:has(#themeSelect option[value="nubank"]:checked){--bar:#820AD1;--bar-ink:#fff;--cta:#820AD1;--cta-ink:#fff;--link:#820AD1}
+html:root:has(#themeSelect option[value="bradesco"]:checked){--bar:#CC092F;--bar-ink:#fff;--cta:#CC092F;--cta-ink:#fff;--link:#CC092F}
+html:root:has(#themeSelect option[value="pan"]:checked){--bar:#00AEEF;--bar-ink:#06283A;--cta:#00AEEF;--cta-ink:#06283A;--link:#006a94}
+html:root:has(#themeSelect option[value="bb"]:checked){--bar:#FCEB00;--bar-ink:#0038A8;--cta:#0038A8;--cta-ink:#FCEB00;--link:#0038A8}
+html:root:has(#themeSelect){--brand-safe:var(--link);--on-brand:var(--bar-ink);--nav-bg:var(--bar);--nav-ink:var(--bar-ink)}
+html .app-header{background:var(--bar)!important;color:var(--bar-ink)!important;border-bottom:0}
+html .app-header :is(.profile-name,.profile-head .muted,.header-date,.app-version){color:var(--bar-ink)!important}
+html .app-header .head-icon,html .app-header #logout{background:color-mix(in srgb,var(--bar-ink) 14%,transparent)!important;color:var(--bar-ink)!important;border:1px solid color-mix(in srgb,var(--bar-ink) 26%,transparent)!important;box-shadow:none}
+html .app-header .header-search-wrap input{background:color-mix(in srgb,var(--bar-ink) 12%,transparent);color:var(--bar-ink);border-color:color-mix(in srgb,var(--bar-ink) 28%,transparent)}
+html .app-header .header-search-wrap input::placeholder{color:var(--bar-ink);opacity:.85}
+html .overview-card,html .installment-card,html .installment-overview{background:var(--bar);color:var(--bar-ink);border:0}
+html .overview-card *,html .installment-card *,html .installment-overview *{color:inherit}
+html .overview-progress,html .installment-track{background:color-mix(in srgb,var(--bar-ink) 24%,transparent)}
+html .overview-progress span,html .installment-track span{background:var(--bar-ink)}
+html :is(.auth-submit,.auth-mark,#newSalary,#newPlan,#saveEntry,#saveProfile,.category-chip.selected,#biometricUnlock){background:var(--cta);color:var(--cta-ink)}
+html .auth-screen,html .modalbox{border-top-color:var(--bar)}
+html body:not(:has(#app:not(.hidden))){background:var(--bar)!important;min-height:100vh;min-height:100dvh}
+html:root:not(:has(#app:not(.hidden))){background:var(--bar)}
+@media (min-width:1100px) and (min-height:600px){
+ html #app .bottom-nav{background:var(--bar)}
+ html #app .bottom-nav::before{color:var(--bar-ink);border-color:color-mix(in srgb,var(--bar-ink) 24%,transparent)}
+ html #app .bottom-nav button{color:var(--bar-ink)}
+ html #app .bottom-nav button span{color:inherit}
+ html #app .bottom-nav button:hover,html #app .bottom-nav button.active{background:color-mix(in srgb,var(--bar-ink) 18%,transparent);color:var(--bar-ink)}
+ html #app .bottom-nav button.active{box-shadow:inset 3px 0 0 var(--bar-ink)}
+}
+@media not all and (min-width:1100px){
+ html .bottom-nav button span{color:var(--link);--nav-icon:var(--link)!important}
+ html .bottom-nav button.active{color:var(--link);box-shadow:inset 0 3px 0 var(--bar)}
+}
+
+/* ===== Celular compacto ===== */
+@media (max-width:620px){
+ html .app-header{min-height:0;padding:8px 10px;gap:6px}
+ .app-header .profile-head{gap:8px}
+ .app-header :is(.avatar-fallback){width:34px;height:34px;font-size:13px}.app-header #headerAvatar{width:34px!important;height:34px!important}
+ .app-header .app-version{display:none}
+ .app-header .profile-head .muted:not(.header-date){display:none}
+ .app-header .profile-name{font-size:14px;line-height:1.2}.app-header .header-date{font-size:10px}
+ html .app-header .header-actions{display:flex;gap:5px;flex-wrap:nowrap;width:100%}
+ html .app-header .header-actions>*{flex:none}html .app-header .header-actions>.header-search-wrap{flex:1 1 0;min-width:0}
+ html .app-header .notification-wrap{width:32px;height:32px}
+ .app-header .header-search-wrap{flex:1;min-width:0}.app-header .header-search-wrap input{height:32px;min-height:32px;width:100%;font-size:16px;padding:0 10px 0 30px}
+ html .app-header .head-icon{width:32px;height:32px;min-height:32px;flex:none;padding:0}
+ html .app-header #logout{width:32px;height:32px;min-height:32px;padding:0;flex:none;justify-content:center}#logout span{display:none}
+ body:has(#app:not(.hidden))>main{padding:10px 10px 12px;margin-bottom:calc(68px + env(safe-area-inset-bottom))}
+ .panel,.stat{padding:12px;border-radius:10px;margin-bottom:10px}
+ h2,#startView h2,#accounts h2,#settings h2,#plans h2{font-size:16px;margin-bottom:10px}
+ #startView h2::after{display:none}
+ .start-grid{gap:8px}.start-grid button{min-height:0;padding:10px;border-radius:10px;gap:1px}
+ .start-grid .menu-icon{width:30px;height:30px;margin-bottom:4px}.start-grid .menu-icon svg{width:16px;height:16px}
+ .start-grid button>span{font-size:13px}.start-grid button small{font-size:10px}
+ .month-switch{margin-bottom:8px;gap:14px}.month{font-size:14px}.month-arrow{width:30px;height:30px;min-height:30px;padding:0}
+ .overview-card{padding:12px 14px;margin-bottom:10px;border-radius:10px}.overview-label{font-size:11px}.overview-value{font-size:26px;margin:2px 0}.overview-caption{display:none}.overview-progress{margin-top:8px}.overview-foot{margin-top:6px;font-size:10px}
+ .quick-actions{gap:6px;margin-bottom:10px}.quick-actions button{min-height:0;padding:7px 2px;gap:4px;font-size:10px;border-radius:10px}
+ .quick-actions i{width:28px;height:28px}.quick-actions i svg{width:15px;height:15px}
+ .section-title{font-size:11px;padding-bottom:8px;margin-bottom:8px}.section-title svg{width:16px;height:16px}
+ .group-heading{padding:6px 8px;margin:8px 0 2px;font-size:10px}.group-icon{transform:scale(.8)}
+ .bill-row{padding:8px 6px}.bill-main b{font-size:12.5px}.bill-main small{font-size:10px}.bill-amount{font-size:12.5px}
+ .bill-actions{margin-top:4px}.bill-actions button{min-height:26px;padding:3px 8px;font-size:10px}
+ .upcoming-item{padding:9px 0}.installment-card{padding:12px;margin:8px 0}.installment-overview{padding:12px;margin:10px 0}.installment-overview strong{font-size:22px}
+ .analytics-card{min-height:0;padding:10px}.analytics-card strong{font-size:16px;margin-top:4px}
+ html .bottom-nav{bottom:6px;padding:4px 6px calc(4px + env(safe-area-inset-bottom));width:calc(100% - 16px)}
+ .bottom-nav button{min-height:44px;gap:1px;font-size:10px}.bottom-nav button span{height:22px;width:30px}.bottom-nav button span svg{width:17px;height:17px}
+ .auth-screen{padding:18px 16px;margin-top:8px}.auth-orbit{display:none}.auth-brand{margin-bottom:14px}.auth-hero h2{font-size:19px}
+}

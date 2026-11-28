@@ -8,7 +8,7 @@
   const grouped=new Map();
   entries.filter(e=>e.recurrence_type==='installments').forEach(e=>{const key=e.series_id||e.id;if(!grouped.has(key))grouped.set(key,{key,current:[],history:[],review:[]});grouped.get(key).current.push(e)});
   const groups=[...grouped.values()];
-  groups.forEach(g=>{g.anchor=[...g.current].sort((a,b)=>a.due_date.localeCompare(b.due_date))[0];g.name=title(g.anchor.description);g.declared=Math.max(...g.current.map(e=>Number(e.installment_total)||0));const offsets=new Set(g.current.map(e=>month(e.due_date)-Number(e.installment_number)));g.offset=offsets.size===1?[...offsets][0]:null;g.slots=new Set(g.current.map(e=>Number(e.installment_number)));});
+  groups.forEach(g=>{g.anchor=[...g.current].sort((a,b)=>a.due_date.localeCompare(b.due_date))[0];g.name=title(g.anchor.description);const open=g.current.filter(e=>e.status==='pending');g.declared=Math.max(...(open.length?open:g.current).map(e=>Number(e.installment_total)||0));const offsets=new Set(g.current.map(e=>month(e.due_date)-Number(e.installment_number)));g.offset=offsets.size===1?[...offsets][0]:null;g.slots=new Set(g.current.map(e=>Number(e.installment_number)));});
   if(Array.isArray(links)){
    const byId=new Map(entries.map(e=>[e.id,e]));
    links.forEach(link=>{const g=grouped.get(link.series_id),row=byId.get(link.entry_id);if(g&&row&&row.recurrence_type!=='installments'&&!g.slots.has(Number(link.installment_number)))g.history.push({...row,installment_number:Number(link.installment_number),installment_total:g.declared});});

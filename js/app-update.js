@@ -6,7 +6,7 @@
   const banner=document.createElement('div');banner.id='appUpdateBanner';banner.setAttribute('role','status');
   const text=document.createElement('span');text.textContent='Uma nova versão está pronta.';
   const button=document.createElement('button');button.type='button';button.textContent='Atualizar agora';
-  button.onclick=()=>{if(document.querySelector('.modal.open')&&!confirm('Há uma janela aberta. Atualizar pode descartar alterações ainda não salvas. Continuar?'))return;location.reload()};
+  button.onclick=async()=>{if(document.querySelector('.modal.open')&&!await AppDialog.confirm('Há uma janela aberta. Atualizar pode descartar alterações ainda não salvas. Continuar?',{title:'Atualizar app',ok:'Atualizar'}))return;location.reload()};
   banner.append(text,button);document.body.append(banner);
  }
  let hadController=!!navigator.serviceWorker.controller;

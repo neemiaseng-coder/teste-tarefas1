@@ -139,3 +139,68 @@ html:root:not(:has(#app:not(.hidden))){background:var(--bar)}
  .bottom-nav button{min-height:44px;gap:1px;font-size:10px}.bottom-nav button span{height:22px;width:30px}.bottom-nav button span svg{width:17px;height:17px}
  .auth-screen{padding:18px 16px;margin-top:8px}.auth-orbit{display:none}.auth-brand{margin-bottom:14px}.auth-hero h2{font-size:19px}
 }
+
+/* ===== Minimalista: fundo branco, cor do banco só nos destaques ===== */
+html:root{--m-ink:#16181d;--m-soft:#6b7280;--m-line:#ececf0;--m-wash:#f5f5f7}
+html:root:has(#themeSelect),html:root:not(:has(#app:not(.hidden))){background:#fff}
+html body,html body:has(#app:not(.hidden)),html body:not(:has(#app:not(.hidden))){background:#fff!important;color:var(--m-ink)!important}
+
+/* Topo */
+html body .app-header{background:#fff!important;color:var(--m-ink)!important;border:0;border-bottom:1px solid var(--m-line);box-shadow:none}
+html body .app-header :is(.profile-name,.profile-head .muted,.header-date,.app-version){color:var(--m-ink)!important}
+html body .app-header :is(.profile-head .muted,.header-date,.app-version){color:var(--m-soft)!important;background:transparent;border:0;padding-left:0}
+html body .app-header :is(.avatar-fallback,#headerAvatar){border:0!important;box-shadow:none!important;border-radius:50%!important}
+html body .app-header .avatar-fallback{background:var(--bar)!important;color:var(--bar-ink)!important}
+html body .app-header .header-actions :is(#notificationBtn,#toggleValues,#supportBtn,#headerSettings,#logout){background:transparent!important;color:var(--m-soft)!important;border:0!important;box-shadow:none!important}
+html body .app-header .header-actions :is(#notificationBtn,#toggleValues,#supportBtn,#headerSettings,#logout):hover{background:var(--m-wash)!important;color:var(--m-ink)!important;transform:none}
+html body .app-header .header-actions .head-icon::before{filter:brightness(0) opacity(.58);width:20px!important;height:20px!important}
+html body .app-header .header-search-wrap input{background:var(--m-wash);color:var(--m-ink);border:1px solid transparent;box-shadow:none;border-radius:10px}
+html body .app-header .header-search-wrap input:focus{background:#fff;border-color:var(--link)}
+html body .app-header .header-search-wrap input::placeholder{color:var(--m-soft)}
+html body .app-header .header-search-wrap::before{background:var(--m-soft)}
+
+/* Blocos sem caixas e sem sombras */
+html body .panel,html body .stat{background:#fff!important;border:1px solid var(--m-line);box-shadow:none}
+html body #app #dashboard>.panel{border:0;padding-left:0;padding-right:0}
+html body .section-title{color:var(--m-soft);border-bottom:1px solid var(--m-line);font-weight:600}
+html body .section-title>.app-icon{display:none}
+html body :is(.overview-card,.installment-card,.installment-overview){box-shadow:none;border-radius:16px}
+html body .month-arrow{background:transparent;border:0;box-shadow:none;color:var(--m-soft)}
+
+/* Atalhos e menu inicial com ícones de uma cor só */
+html body .quick-actions button{background:transparent!important;border:0!important;box-shadow:none!important;transform:none}
+html body .quick-actions button:hover{background:var(--m-wash)!important}
+html body .quick-actions button i{background:var(--m-wash)!important;color:var(--m-ink)!important;border:0!important;box-shadow:none!important;border-radius:50%!important}
+html body .start-grid button{background:#fff!important;border:1px solid var(--m-line)!important;box-shadow:none!important;border-radius:14px}
+html body .start-grid button:hover{border-color:var(--link)!important;transform:none}
+html body .start-grid .menu-icon{color:var(--link)!important;background:transparent!important;border:0!important;box-shadow:none!important;justify-content:flex-start}
+
+/* Listas limpas */
+html body .group-heading{background:transparent;border:0;color:var(--m-soft);padding-left:0;padding-right:0;margin-top:14px}
+html body .group-heading .group-icon{display:none}
+html body .bill-row{background:transparent!important;border:0;border-bottom:1px solid var(--m-line);box-shadow:none!important;padding-left:0;padding-right:0}
+html body .bill-row.is-paid .bill-amount{color:#16764f}
+html body .bill-actions button{background:transparent!important;border:1px solid var(--m-line)!important;box-shadow:none!important;color:var(--m-soft)!important}
+html body .bill-actions button.pay-action{color:#16764f!important;border-color:#cfe5da!important}
+html body .bill-actions button:hover{background:var(--m-wash)!important}
+
+/* Menu */
+@media not all and (min-width:1100px){
+ html body .bottom-nav{background:#fff;border:1px solid var(--m-line);box-shadow:0 2px 12px #0000000d}
+ html body .bottom-nav button{background:transparent;box-shadow:none;color:var(--m-soft)}
+ html body .bottom-nav button span{background:transparent!important;color:var(--m-soft);--nav-icon:var(--m-soft)!important}
+ html body .bottom-nav button.active{background:transparent;box-shadow:none;color:var(--link)}
+ html body .bottom-nav button.active span{color:var(--link);--nav-icon:var(--link)!important}
+}
+@media (min-width:1100px) and (min-height:600px){
+ html body #app .bottom-nav{background:#fff;box-shadow:none;border-right:1px solid var(--m-line)}
+ html body #app .bottom-nav::before{color:var(--m-ink);border-color:var(--m-line)}
+ html body #app .bottom-nav button{color:var(--m-soft);box-shadow:none}
+ html body #app .bottom-nav button span{color:inherit;--nav-icon:currentColor!important}
+ html body #app .bottom-nav button:hover{background:var(--m-wash);color:var(--m-ink)}
+ html body #app .bottom-nav button.active{background:var(--m-wash);color:var(--link);box-shadow:none}
+}
+
+/* Acesso */
+html body:not(:has(#app:not(.hidden))) .app-header{background:transparent!important;border:0}
+html body .auth-screen{border:1px solid var(--m-line);border-top:3px solid var(--bar);box-shadow:none}

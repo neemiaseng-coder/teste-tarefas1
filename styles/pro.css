@@ -1,0 +1,68 @@
+/* Visual "sistema corporativo". Somente apresentação: nenhuma regra, dado ou texto muda. */
+:root{--radius:12px;--shadow:0 1px 2px #0b1a330f,0 4px 14px #0b1a330a;--nav-bg:color-mix(in srgb,var(--green) 20%,#08111f);--nav-ink:#bcc8dc;--hair:#dde3ec}
+body{background:#eef1f6;color:var(--ink)}
+/* Cabeçalho e resumo */
+.app-header{background:var(--nav-bg)!important;color:#fff!important;border-bottom:3px solid var(--green);box-shadow:0 2px 10px #06102433;min-height:76px;padding-top:14px;padding-bottom:14px}
+.app-header :is(.profile-name,.profile-head .muted,.header-date,.app-version){color:#fff!important}
+.avatar-fallback,#headerAvatar{border-radius:10px!important}
+.head-icon{border-radius:10px;background:#ffffff14!important;border-color:#ffffff24!important;color:#fff!important}
+.header-search-wrap input{border-radius:10px;background:#ffffff12;border-color:#ffffff24;color:#fff}
+.header-search-wrap input::placeholder{color:var(--nav-ink)}
+#logout{background:#ffffff14;color:#fff;border-radius:10px}
+.panel,.stat{border-radius:var(--radius);border:1px solid var(--hair);box-shadow:var(--shadow);padding:20px}
+h2,#startView h2{font-weight:700}
+#startView h2{font-size:23px;margin-bottom:18px}
+.section-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;padding-bottom:12px;border-bottom:1px solid var(--hair);margin-bottom:14px}
+/* Menu inicial */
+.start-grid{gap:12px}
+.start-grid button{align-items:flex-start;text-align:left;min-height:132px;padding:18px;border-radius:var(--radius);background:#fff!important;border:1px solid var(--hair);border-top:3px solid var(--tile,var(--green));box-shadow:var(--shadow)}
+.start-grid button:has(.ic-summary){--tile:#6f42bf}.start-grid button:has(.ic-bills){--tile:#16835a}.start-grid button:has(.ic-upcoming){--tile:#b6670d}.start-grid button:has(.ic-installments){--tile:#2877c7}.start-grid button:has(.ic-salary){--tile:#047f91}.start-grid button:has(.ic-plans){--tile:#bb3970}.start-grid button:has(.ic-settings){--tile:#576b86}
+.start-grid button:hover{border-color:var(--tile,var(--green));transform:translateY(-2px);box-shadow:0 10px 24px #0b1a3317}
+.start-grid button .menu-icon{border-radius:10px!important}
+/* Resumo */
+.overview-card,.installment-card,.installment-overview{border-radius:var(--radius);color:#fff;border:1px solid #ffffff1a;background:linear-gradient(118deg,var(--nav-bg),color-mix(in srgb,var(--green) 72%,#0a1730));box-shadow:0 8px 22px #0a173026}
+.overview-card::after{display:none}
+.overview-value{font-weight:700}
+.overview-progress,.installment-track{background:#ffffff26}.overview-progress span,.installment-track span{background:#fff}
+.quick-actions{gap:10px}
+.quick-actions button{border-radius:var(--radius);background:#fff;border:1px solid var(--hair);box-shadow:var(--shadow);color:var(--ink)}
+.quick-actions button:hover{border-color:var(--green)}
+.quick-actions i{border-radius:10px!important}
+.month-arrow{border-radius:10px;border-color:var(--hair)}
+/* Listas em formato de tabela */
+.group-heading{border-radius:6px;text-transform:uppercase}
+.bill-row{border-radius:0;border-bottom:1px solid var(--hair);padding:13px 12px;margin:0}
+.bill-row.is-paid{box-shadow:inset 3px 0 0 #16835a}
+.bill-row:not(.is-paid):hover{background:#f4f7fc}
+.bill-amount,.money{font-variant-numeric:tabular-nums;font-weight:700}
+.bill-actions button,.pill{border-radius:6px}
+.analytics-card,.analytics-filters,.analytics-scroll{border-radius:var(--radius)}
+/* Formulários, botões e janelas */
+button,.field input,.field select,.field textarea,.auth-input-wrap,.repeat-card,.category-chip,.header-popover{border-radius:8px}
+.field input,.field select,.field textarea{background:#f8fafc;border-color:#cfd7e4}
+.modalbox{border-radius:14px;border-top:4px solid var(--green)}
+.modal{background:#08111f99}
+/* Menu inferior (celular e tablet) */
+.bottom-nav{border-radius:14px;border-color:var(--hair);box-shadow:0 8px 28px #0a173024}
+.bottom-nav button{border-radius:8px}
+.bottom-nav button.active{box-shadow:inset 0 3px 0 var(--green)}
+/* Acesso */
+body:not(:has(#app:not(.hidden))){background:radial-gradient(ellipse at 20% 10%,color-mix(in srgb,var(--green) 45%,#0a1730),#08111f 65%) fixed}
+body:not(:has(#app:not(.hidden))) .app-header{background:transparent!important;border:0;box-shadow:none}
+.auth-screen{border-radius:14px;border:0;border-top:4px solid var(--green);background:#fff;color:#0f1b2d;box-shadow:0 28px 70px #00000066}
+.auth-submit{border-radius:8px}
+/* Computador: menu lateral fixo, como um sistema de gestão */
+@media (min-width:1100px) and (min-height:600px){
+ body:has(#app:not(.hidden)){padding-left:232px}
+ body:has(#app:not(.hidden))>main{max-width:1180px;margin:0 auto;padding:24px 28px 32px}
+ .app-header{padding-left:28px;padding-right:28px}
+ #app .bottom-nav{position:fixed;top:0;bottom:0;left:0;right:auto;width:232px;max-width:none;transform:none;flex-direction:column;justify-content:flex-start;gap:4px;padding:22px 12px;border:0;border-radius:0;background:var(--nav-bg);box-shadow:4px 0 18px #06102426;overflow-y:auto;backdrop-filter:none}
+ #app .bottom-nav::before{content:"Meu Financeiro";color:#fff;font-size:17px;font-weight:700;padding:4px 10px 22px;margin-bottom:8px;border-bottom:1px solid #ffffff1a}
+ #app .bottom-nav button{flex:none;flex-direction:row;justify-content:flex-start;width:100%;min-height:46px;gap:10px;padding:8px 10px;font-size:13px;color:var(--nav-ink);background:transparent;box-shadow:none}
+ #app .bottom-nav button span{background:transparent;color:inherit}
+ #app .bottom-nav button:hover{background:#ffffff12;color:#fff}
+ #app .bottom-nav button.active{background:#ffffff1c;color:#fff;box-shadow:inset 3px 0 0 color-mix(in srgb,var(--green) 45%,#fff)}
+ #app .bottom-nav button.active span{background:transparent}
+ .start-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #dashboard{max-width:1000px}
+}

@@ -350,3 +350,55 @@ html body #app .bill-row.is-pending .bill-actions button.edit-action,html body #
 html body #app #entryList{padding:0}
 .pay-box{min-width:0}
 .pay-box strong{font-size:clamp(14px,4.4vw,19px);white-space:nowrap;overflow-wrap:normal}
+
+/* ===== Ícones do topo centralizados ===== */
+html body .app-header .header-actions .head-icon,html body .app-header .header-actions #logout{display:flex!important;align-items:center!important;justify-content:center!important;padding:0;line-height:0}
+html body .app-header .header-actions .head-icon::before{position:static!important;margin:0!important;flex:none}
+html body .app-header .header-actions #logout svg{margin:0;flex:none}
+html body .app-header .header-actions #logout span{line-height:1}
+@media (min-width:621px){html body .app-header .header-actions #logout{padding:0 16px;gap:7px}}
+
+/* ===== Lista em formato de extrato (compacta) ===== */
+html body #app :is(#dashboardGroups,#entryList) .group-heading{background:color-mix(in srgb,var(--bar) 16%,#fff)!important;color:#14161c!important;border:0!important;border-radius:10px;margin:14px 0 6px;padding:8px 12px;min-height:0;font-size:11.5px}
+html body #app :is(#dashboardGroups,#entryList) .group-heading span,html body #app :is(#dashboardGroups,#entryList) .group-heading span:last-child{color:#14161c!important}
+html body #app :is(#dashboardGroups,#entryList) .group-heading{box-shadow:inset 4px 0 0 var(--link)}
+html:root:has(#themeSelect option[value="bb"]:checked) body #app :is(#dashboardGroups,#entryList) .group-heading{background:color-mix(in srgb,#FCEB00 45%,#fff)!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-row{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"main value actions";column-gap:10px;row-gap:0;align-items:center;min-height:54px;margin:0 0 2px!important;padding:7px 8px 7px 12px!important;border:0!important;border-radius:4px!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-row:first-of-type{border-radius:10px 10px 4px 4px!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-row:last-of-type{border-radius:4px 4px 10px 10px!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-row.is-pending{background:transparent!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-row.is-paid{background:#e9f7ef!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-row::before,html body #app :is(#dashboardGroups,#entryList) .bill-row::after{display:none!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-meta{display:none}
+html body #app :is(#dashboardGroups,#entryList) .bill-main b{display:block;font-size:14px;line-height:1.3;font-weight:600;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+html body #app .bill-line{display:flex;flex-wrap:wrap;gap:0 8px}
+html body #app :is(#dashboardGroups,#entryList) .bill-part{font-size:11.5px;color:#5c6370;line-height:1.5}
+html body #app :is(#dashboardGroups,#entryList) .bill-status{display:inline;margin:0;padding:0;background:none!important;border-radius:0;font-size:11.5px;font-weight:700;letter-spacing:0;text-transform:none;line-height:1.5}
+html body #app :is(#dashboardGroups,#entryList) .is-pending .bill-status{display:none}
+html body #app :is(#dashboardGroups,#entryList) .is-paid .bill-status{color:#0f6b45}
+html body #app :is(#dashboardGroups,#entryList) .is-paid .bill-status::before{content:"✓ "}
+html body #app :is(#dashboardGroups,#entryList) .is-late .bill-status{display:inline;color:#b3261e}
+html body #app :is(#dashboardGroups,#entryList) .bill-amount{font-size:14px;font-weight:700;white-space:nowrap;text-align:right;color:#14161c}
+html body #app :is(#dashboardGroups,#entryList) .is-paid .bill-amount{color:#0f6b45}
+html body #app :is(#dashboardGroups,#entryList) .bill-actions{position:relative;justify-content:flex-end;min-width:68px;gap:0;flex-wrap:nowrap}
+html body #app :is(#dashboardGroups,#entryList) .bill-actions button{width:auto;min-height:36px;height:36px;margin:0;border-radius:99px;font-size:12.5px;line-height:1}
+html body #app :is(#dashboardGroups,#entryList) .bill-actions .pay-action{min-width:68px;padding:0 14px;justify-content:center}
+html body #app :is(#dashboardGroups,#entryList) .bill-actions .pay-action svg{display:none}
+html body #app :is(#dashboardGroups,#entryList) .is-paid .bill-actions button{width:36px;min-width:36px;padding:0;justify-content:center;background:transparent!important;color:#0f6b45!important}
+html body #app :is(#dashboardGroups,#entryList) .is-paid .bill-actions button span,html body #app :is(#dashboardGroups,#entryList) .is-pending .bill-actions .edit-action:not(:focus-visible){position:absolute;width:1px;height:1px;min-width:0;min-height:0;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html body #app :is(#dashboardGroups,#entryList) .is-pending .bill-actions .edit-action:focus-visible{position:absolute;right:76px}
+html body #app :is(#dashboardGroups,#entryList) .is-pending{cursor:pointer}
+html body #app #entryList .pay-summary{gap:6px 8px;margin:0}
+html body #app #entryList .pay-box{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:0 8px;padding:8px 10px;border:0;border-radius:10px}
+html body #app #entryList .pay-box strong{margin:0;font-size:15px}
+html body #app #entryList .pay-box span{font-size:11px}
+html body #app #entryList .pay-bar{height:6px}
+@media (max-width:620px){html body #app :is(#dashboard,#accounts)>.panel:has(:is(#dashboardGroups,#entryList)){padding:14px 10px}}
+@media (max-width:360px){html body #app :is(#dashboardGroups,#entryList) .bill-row{column-gap:6px;padding-left:9px!important}html body #app :is(#dashboardGroups,#entryList) .bill-actions{min-width:58px}html body #app :is(#dashboardGroups,#entryList) .bill-actions .pay-action{min-width:58px;padding:0 10px}html body #app :is(#dashboardGroups,#entryList) :is(.bill-amount,.bill-main b){font-size:13px}}
+html body #app #entryList .pay-box{flex-direction:column;align-items:flex-start;flex-wrap:nowrap;gap:0}
+html body #app :is(#dashboardGroups,#entryList) .group-heading{box-shadow:none;margin:12px 0 4px;padding:6px 12px}
+html body #app :is(#dashboardGroups,#entryList) .bill-row{min-height:50px;padding-top:6px!important;padding-bottom:6px!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-actions button{height:32px;min-height:32px}
+/* Em aberto: sem cor de fundo, só um divisor. Pagas: fundo suave. */
+html body #app :is(#dashboardGroups,#entryList) .bill-row.is-pending{background:transparent!important;box-shadow:inset 0 -1px 0 #e6e8ee;border-radius:0!important}
+html body #app :is(#dashboardGroups,#entryList) .bill-row.is-paid{box-shadow:none}

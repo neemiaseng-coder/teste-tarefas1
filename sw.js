@@ -1,4 +1,4 @@
-const CACHE='financeiro-familiar-v57';
+const CACHE='financeiro-familiar-v58';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./styles/banking.css','./styles/pro.css','./fonts/figtree.woff2','./fonts/inter.woff2','./fonts/sora.woff2','./fonts/nunito-sans.woff2','./fonts/source-sans-3.woff2','./fonts/poppins-400.woff2','./fonts/poppins-500.woff2','./fonts/poppins-600.woff2','./fonts/poppins-700.woff2','./js/dialog.js','./js/analytics.js','./js/installments.js','./js/ui-icons.js','./js/app-update.js','./js/header-ui.js','./js/goals.js','./js/upcoming.js','./js/schedule.js','./js/navigation.js','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('financeiro-familiar-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));

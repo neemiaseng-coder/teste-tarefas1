@@ -69,7 +69,8 @@ body:not(:has(#app:not(.hidden))) .app-header{background:transparent!important;b
 
 /* ===== Fonte única dos sistemas ===== */
 @font-face{font-family:"Figtree";src:url("../fonts/figtree.woff2") format("woff2");font-weight:300 900;font-display:swap}
-html:root,html body,html body *{font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif!important}
+html:root{--font:"Figtree"}
+html:root,html body,html body *{font-family:var(--font),system-ui,-apple-system,"Segoe UI",sans-serif!important}
 
 /* ===== Temas com as cores de cada banco ===== */
 html:root{--bar:#FF7A00;--bar-ink:#fff;--cta:#FF7A00;--cta-ink:#fff;--link:#b45400}
@@ -104,103 +105,203 @@ html:root:not(:has(#app:not(.hidden))){background:var(--bar)}
  html .bottom-nav button.active{color:var(--link);box-shadow:inset 0 3px 0 var(--bar)}
 }
 
-/* ===== Celular compacto ===== */
-@media (max-width:620px){
- html .app-header{min-height:0;padding:8px 10px;gap:6px}
- .app-header .profile-head{gap:8px}
- .app-header :is(.avatar-fallback){width:34px;height:34px;font-size:13px}.app-header #headerAvatar{width:34px!important;height:34px!important}
- .app-header .app-version{display:none}
- .app-header .profile-head .muted:not(.header-date){display:none}
- .app-header .profile-name{font-size:14px;line-height:1.2}.app-header .header-date{font-size:10px}
- html .app-header .header-actions{display:flex;gap:5px;flex-wrap:nowrap;width:100%}
- html .app-header .header-actions>*{flex:none}html .app-header .header-actions>.header-search-wrap{flex:1 1 0;min-width:0}
- html .app-header .notification-wrap{width:32px;height:32px}
- .app-header .header-search-wrap{flex:1;min-width:0}.app-header .header-search-wrap input{height:32px;min-height:32px;width:100%;font-size:16px;padding:0 10px 0 30px}
- html .app-header .head-icon{width:32px;height:32px;min-height:32px;flex:none;padding:0}
- html .app-header #logout{width:32px;height:32px;min-height:32px;padding:0;flex:none;justify-content:center}#logout span{display:none}
- body:has(#app:not(.hidden))>main{padding:10px 10px 12px;margin-bottom:calc(68px + env(safe-area-inset-bottom))}
- .panel,.stat{padding:12px;border-radius:10px;margin-bottom:10px}
- h2,#startView h2,#accounts h2,#settings h2,#plans h2{font-size:16px;margin-bottom:10px}
- #startView h2::after{display:none}
- .start-grid{gap:8px}.start-grid button{min-height:0;padding:10px;border-radius:10px;gap:1px}
- .start-grid .menu-icon{width:30px;height:30px;margin-bottom:4px}.start-grid .menu-icon svg{width:16px;height:16px}
- .start-grid button>span{font-size:13px}.start-grid button small{font-size:10px}
- .month-switch{margin-bottom:8px;gap:14px}.month{font-size:14px}.month-arrow{width:30px;height:30px;min-height:30px;padding:0}
- .overview-card{padding:12px 14px;margin-bottom:10px;border-radius:10px}.overview-label{font-size:11px}.overview-value{font-size:26px;margin:2px 0}.overview-caption{display:none}.overview-progress{margin-top:8px}.overview-foot{margin-top:6px;font-size:10px}
- .quick-actions{gap:6px;margin-bottom:10px}.quick-actions button{min-height:0;padding:7px 2px;gap:4px;font-size:10px;border-radius:10px}
- .quick-actions i{width:28px;height:28px}.quick-actions i svg{width:15px;height:15px}
- .section-title{font-size:11px;padding-bottom:8px;margin-bottom:8px}.section-title svg{width:16px;height:16px}
- .group-heading{padding:6px 8px;margin:8px 0 2px;font-size:10px}.group-icon{transform:scale(.8)}
- .bill-row{padding:8px 6px}.bill-main b{font-size:12.5px}.bill-main small{font-size:10px}.bill-amount{font-size:12.5px}
- .bill-actions{margin-top:4px}.bill-actions button{min-height:26px;padding:3px 8px;font-size:10px}
- .upcoming-item{padding:9px 0}.installment-card{padding:12px;margin:8px 0}.installment-overview{padding:12px;margin:10px 0}.installment-overview strong{font-size:22px}
- .analytics-card{min-height:0;padding:10px}.analytics-card strong{font-size:16px;margin-top:4px}
- html .bottom-nav{bottom:6px;padding:4px 6px calc(4px + env(safe-area-inset-bottom));width:calc(100% - 16px)}
- .bottom-nav button{min-height:44px;gap:1px;font-size:10px}.bottom-nav button span{height:22px;width:30px}.bottom-nav button span svg{width:17px;height:17px}
- .auth-screen{padding:18px 16px;margin-top:8px}.auth-orbit{display:none}.auth-brand{margin-bottom:14px}.auth-hero h2{font-size:19px}
-}
-
-/* ===== Minimalista: fundo branco, cor do banco só nos destaques ===== */
-html:root{--m-ink:#16181d;--m-soft:#6b7280;--m-line:#ececf0;--m-wash:#f5f5f7}
-html:root:has(#themeSelect),html:root:not(:has(#app:not(.hidden))){background:#fff}
-html body,html body:has(#app:not(.hidden)),html body:not(:has(#app:not(.hidden))){background:#fff!important;color:var(--m-ink)!important}
-
-/* Topo */
-html body .app-header{background:#fff!important;color:var(--m-ink)!important;border:0;border-bottom:1px solid var(--m-line);box-shadow:none}
-html body .app-header :is(.profile-name,.profile-head .muted,.header-date,.app-version){color:var(--m-ink)!important}
-html body .app-header :is(.profile-head .muted,.header-date,.app-version){color:var(--m-soft)!important;background:transparent;border:0;padding-left:0}
+/* ===== App de banco ===== */
+html:root{--app-bg:#f3f4f7;--card:#fff;--text:#14161c;--sub:#666d7a;--soft:color-mix(in srgb,var(--link) 10%,#fff)}
+html body:has(#app:not(.hidden)){background:var(--app-bg)!important;color:var(--text)!important}
+html body .app-header #notificationBtn::before{content:""!important;display:block!important;width:21px!important;height:21px!important;background:currentColor!important;filter:none;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%209a6%206%200%200%201%2012%200c0%206%202%207%202%207H4s2-1%202-7%27/%3E%3Cpath%20d%3D%27M10%2020a2%202%200%200%200%204%200%27/%3E%3C/svg%3E") center/contain no-repeat!important;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%209a6%206%200%200%201%2012%200c0%206%202%207%202%207H4s2-1%202-7%27/%3E%3Cpath%20d%3D%27M10%2020a2%202%200%200%200%204%200%27/%3E%3C/svg%3E") center/contain no-repeat!important}
+html body .app-header #toggleValues::before{content:""!important;display:block!important;width:21px!important;height:21px!important;background:currentColor!important;filter:none;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M2.5%2012S6%205.5%2012%205.5%2021.500%2012%2021.500%2012%2018%2018.500%2012%2018.500%202.500%2012%202.500%2012Z%27/%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%273%27/%3E%3C/svg%3E") center/contain no-repeat!important;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M2.5%2012S6%205.5%2012%205.5%2021.500%2012%2021.500%2012%2018%2018.500%2012%2018.500%202.500%2012%202.500%2012Z%27/%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%273%27/%3E%3C/svg%3E") center/contain no-repeat!important}
+html body .app-header #supportBtn::before{content:""!important;display:block!important;width:21px!important;height:21px!important;background:currentColor!important;filter:none;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%279%27/%3E%3Cpath%20d%3D%27M9.500%209.500a2.500%202.500%200%201%201%203.500%202.300c-.7.3-1%20.8-1%201.700%27/%3E%3Cpath%20d%3D%27M12%2017h.01%27/%3E%3C/svg%3E") center/contain no-repeat!important;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%279%27/%3E%3Cpath%20d%3D%27M9.500%209.500a2.500%202.500%200%201%201%203.500%202.300c-.7.3-1%20.8-1%201.700%27/%3E%3Cpath%20d%3D%27M12%2017h.01%27/%3E%3C/svg%3E") center/contain no-repeat!important}
+html body .app-header #headerSettings::before{content:""!important;display:block!important;width:21px!important;height:21px!important;background:currentColor!important;filter:none;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%207h10M18%207h2M4%2017h2M10%2017h10%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%277%27%20r%3D%272%27/%3E%3Ccircle%20cx%3D%278%27%20cy%3D%2717%27%20r%3D%272%27/%3E%3C/svg%3E") center/contain no-repeat!important;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%207h10M18%207h2M4%2017h2M10%2017h10%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%277%27%20r%3D%272%27/%3E%3Ccircle%20cx%3D%278%27%20cy%3D%2717%27%20r%3D%272%27/%3E%3C/svg%3E") center/contain no-repeat!important}
+html body .app-header .header-actions :is(#notificationBtn,#toggleValues,#supportBtn,#headerSettings){font-size:0!important}
+html body .app-header .header-actions :is(.head-icon,#logout){background:color-mix(in srgb,var(--bar-ink) 13%,transparent)!important;border:0!important;box-shadow:none!important;border-radius:50%}
+html body .app-header .header-actions #logout{border-radius:999px}
 html body .app-header :is(.avatar-fallback,#headerAvatar){border:0!important;box-shadow:none!important;border-radius:50%!important}
-html body .app-header .avatar-fallback{background:var(--bar)!important;color:var(--bar-ink)!important}
-html body .app-header .header-actions :is(#notificationBtn,#toggleValues,#supportBtn,#headerSettings,#logout){background:transparent!important;color:var(--m-soft)!important;border:0!important;box-shadow:none!important}
-html body .app-header .header-actions :is(#notificationBtn,#toggleValues,#supportBtn,#headerSettings,#logout):hover{background:var(--m-wash)!important;color:var(--m-ink)!important;transform:none}
-html body .app-header .header-actions .head-icon::before{filter:brightness(0) opacity(.58);width:20px!important;height:20px!important}
-html body .app-header .header-search-wrap input{background:var(--m-wash);color:var(--m-ink);border:1px solid transparent;box-shadow:none;border-radius:10px}
-html body .app-header .header-search-wrap input:focus{background:#fff;border-color:var(--link)}
-html body .app-header .header-search-wrap input::placeholder{color:var(--m-soft)}
-html body .app-header .header-search-wrap::before{background:var(--m-soft)}
+html body .app-header .avatar-fallback{background:var(--bar-ink)!important;color:var(--bar)!important;font-weight:700}
+html body .app-header .header-date{background:transparent;border:0;padding:0;margin:2px 0 0}
+html body .app-header .header-search-wrap input{border:0;border-radius:999px;background:color-mix(in srgb,var(--bar-ink) 13%,transparent)}
 
-/* Blocos sem caixas e sem sombras */
-html body .panel,html body .stat{background:#fff!important;border:1px solid var(--m-line);box-shadow:none}
-html body #app #dashboard>.panel{border:0;padding-left:0;padding-right:0}
-html body .section-title{color:var(--m-soft);border-bottom:1px solid var(--m-line);font-weight:600}
-html body .section-title>.app-icon{display:none}
-html body :is(.overview-card,.installment-card,.installment-overview){box-shadow:none;border-radius:16px}
-html body .month-arrow{background:transparent;border:0;box-shadow:none;color:var(--m-soft)}
+/* Cartões brancos, sem contorno */
+html body #app :is(.panel,.stat){background:var(--card)!important;border:0;border-radius:20px;box-shadow:0 1px 3px #10182814}
+html body #app .overview-card,html body #app .installment-overview,html body #app .installment-card{background:var(--card);color:var(--text);border:0;border-radius:22px;box-shadow:0 2px 10px #10182814}
+html body #app :is(.overview-card,.installment-overview,.installment-card) :is(.overview-label,.overview-caption,.overview-foot,small,.muted,.installment-footnote){color:var(--sub)}
+html body #app .overview-value{color:var(--text);font-weight:750;letter-spacing:-.03em}
+html body #app :is(.overview-progress,.installment-track){background:var(--soft);height:8px;border-radius:99px}
+html body #app :is(.overview-progress,.installment-track) span{background:var(--cta);border-radius:99px}
 
-/* Atalhos e menu inicial com ícones de uma cor só */
-html body .quick-actions button{background:transparent!important;border:0!important;box-shadow:none!important;transform:none}
-html body .quick-actions button:hover{background:var(--m-wash)!important}
-html body .quick-actions button i{background:var(--m-wash)!important;color:var(--m-ink)!important;border:0!important;box-shadow:none!important;border-radius:50%!important}
-html body .start-grid button{background:#fff!important;border:1px solid var(--m-line)!important;box-shadow:none!important;border-radius:14px}
-html body .start-grid button:hover{border-color:var(--link)!important;transform:none}
-html body .start-grid .menu-icon{color:var(--link)!important;background:transparent!important;border:0!important;box-shadow:none!important;justify-content:flex-start}
+/* Atalhos redondos */
+html body #app .quick-actions button{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--text);flex-direction:column;font-weight:600}
+html body #app .quick-actions button i{background:var(--card)!important;color:var(--link)!important;border:0!important;border-radius:50%!important;box-shadow:0 2px 8px #1018281a!important}
 
-/* Listas limpas */
-html body .group-heading{background:transparent;border:0;color:var(--m-soft);padding-left:0;padding-right:0;margin-top:14px}
-html body .group-heading .group-icon{display:none}
-html body .bill-row{background:transparent!important;border:0;border-bottom:1px solid var(--m-line);box-shadow:none!important;padding-left:0;padding-right:0}
-html body .bill-row.is-paid .bill-amount{color:#16764f}
-html body .bill-actions button{background:transparent!important;border:1px solid var(--m-line)!important;box-shadow:none!important;color:var(--m-soft)!important}
-html body .bill-actions button.pay-action{color:#16764f!important;border-color:#cfe5da!important}
-html body .bill-actions button:hover{background:var(--m-wash)!important}
+/* Menu inicial */
+html body #app .start-grid button{background:var(--card)!important;border:0!important;border-radius:20px;box-shadow:0 1px 3px #10182814!important}
+html body #app .start-grid .menu-icon{background:var(--soft)!important;color:var(--link)!important;border:0!important;border-radius:50%!important;box-shadow:none!important}
 
-/* Menu */
-@media not all and (min-width:1100px){
- html body .bottom-nav{background:#fff;border:1px solid var(--m-line);box-shadow:0 2px 12px #0000000d}
- html body .bottom-nav button{background:transparent;box-shadow:none;color:var(--m-soft)}
- html body .bottom-nav button span{background:transparent!important;color:var(--m-soft);--nav-icon:var(--m-soft)!important}
- html body .bottom-nav button.active{background:transparent;box-shadow:none;color:var(--link)}
- html body .bottom-nav button.active span{color:var(--link);--nav-icon:var(--link)!important}
+/* Extrato */
+html body #app .section-title{border:0;text-transform:none;letter-spacing:-.01em;color:var(--text);font-weight:750}
+html body #app .section-title>.app-icon{display:none}
+html body #app .group-heading{background:transparent;border:0;color:var(--sub);padding-left:0;padding-right:0}
+html body #app .group-icon{display:none}
+html body #app .bill-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;grid-template-areas:"ico main value" "ico actions actions";column-gap:12px;row-gap:8px;align-items:center;background:transparent!important;box-shadow:none!important;border:0;border-bottom:1px solid #eceef2;border-radius:0;padding:14px 0}
+html body #app .bill-row::before{content:"";grid-area:ico;align-self:start;width:44px;height:44px;border-radius:50%;background:var(--soft)}
+html body #app .bill-row{position:relative}
+html body #app .bill-row::after{content:"";position:absolute;left:11px;top:25px;width:22px;height:22px;background:var(--link);-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%203h12v18l-3-2-3%202-3-2-3%202Z%27/%3E%3Cpath%20d%3D%27M9%208h6M9%2012h6%27/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%203h12v18l-3-2-3%202-3-2-3%202Z%27/%3E%3Cpath%20d%3D%27M9%208h6M9%2012h6%27/%3E%3C/svg%3E") center/contain no-repeat;pointer-events:none}
+html body #app .bill-row.is-paid::before{background:#e4f5ec}
+html body #app .bill-row.is-paid::after{background:#12794d;-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27m5%2012%204.5%204.500L19%207%27/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%271.9%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27m5%2012%204.5%204.500L19%207%27/%3E%3C/svg%3E")}
+html body #app .bill-row>.bill-main{grid-area:main}
+html body #app .bill-row>div:last-child{display:contents}
+html body #app .bill-row .bill-amount{grid-area:value;align-self:center}
+html body #app .bill-row.is-paid .bill-amount{color:#12794d}
+html body #app .bill-row .bill-actions{grid-area:actions;justify-content:flex-start;margin:0;gap:8px}
+html body #app .bill-actions button{border:0!important;border-radius:999px;background:#f0f1f4!important;color:#3d4451!important;box-shadow:none!important;font-weight:650}
+html body #app .bill-actions button.pay-action{background:var(--cta)!important;color:var(--cta-ink)!important}
+
+/* Celular */
+@media (max-width:620px){
+ html body .app-header{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,42px);column-gap:8px;row-gap:14px;align-items:center;min-height:0;padding:14px 16px 16px;border-radius:0 0 26px 26px}
+ html body .app-header .profile-head{grid-area:1/1/2/3;gap:12px;min-width:0;padding:0}
+ html body .app-header .avatar-stack{padding:0}
+ html body .app-header :is(.avatar-fallback,#headerAvatar){width:48px!important;height:48px!important;font-size:19px}
+ html body .app-header .app-version{display:none}
+ html body .app-header .profile-head .muted:not(.header-date){display:none}
+ html body .app-header .profile-name{font-size:19px;font-weight:750;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ html body .app-header .header-date{font-size:12.5px;opacity:.9}
+ html body .app-header .header-actions{display:contents}
+ html body .app-header #toggleValues{grid-area:1/3}
+ html body .app-header .notification-wrap{grid-area:1/4;width:42px;height:42px}
+ html body .app-header .header-search-wrap{grid-area:2/1;min-width:0}
+ html body .app-header .header-search-wrap input{width:100%;height:42px;min-height:42px;font-size:16px;padding:0 14px 0 40px}
+ html body .app-header .header-search-wrap::before{left:15px}
+ html body .app-header #supportBtn{grid-area:2/2}html body .app-header #headerSettings{grid-area:2/3}html body .app-header #logout{grid-area:2/4}
+ html body .app-header .header-actions :is(.head-icon,#logout){width:42px;height:42px;min-height:42px;padding:0;justify-content:center}
+ html body .app-header #logout span{display:none}
+ html body .app-header .notification-popover{right:0}
+
+ body:has(#app:not(.hidden))>main{padding:16px 16px 20px;margin-bottom:calc(76px + env(safe-area-inset-bottom))}
+ html body #app :is(.panel,.stat){padding:18px;margin-bottom:14px}
+ html body #app h2{font-size:20px;margin-bottom:14px}
+ #startView h2::after{display:none}
+ html body #app #startView>.panel{background:transparent!important;box-shadow:none;padding:0}
+ html body #app .start-grid{gap:12px}
+ html body #app .start-grid button{min-height:132px;padding:16px;gap:3px;align-items:flex-start;text-align:left}
+ html body #app .start-grid .menu-icon{width:48px;height:48px;margin-bottom:8px}html body #app .start-grid .menu-icon svg{width:24px;height:24px}
+ html body #app .start-grid button>span{font-size:16px;font-weight:700}html body #app .start-grid button small{font-size:12.5px}
+ html body #app .month-switch{margin-bottom:12px;gap:16px}html body #app .month{font-size:17px;font-weight:700}
+ html body #app .month-arrow{width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:50%;background:var(--card)}
+ html body #app .overview-card{padding:22px 20px;margin-bottom:18px}
+ html body #app .overview-label{font-size:15px;font-weight:600}html body #app .overview-value{font-size:36px;margin:6px 0 0}
+ html body #app .overview-caption{display:none}html body #app .overview-progress{margin-top:16px}html body #app .overview-foot{margin-top:10px;font-size:13px}
+ html body #app .quick-actions{gap:4px;margin-bottom:18px}
+ html body #app .quick-actions button{min-height:0;padding:0;gap:8px;font-size:12.5px}
+ html body #app .quick-actions button i{width:62px;height:62px;display:grid;place-items:center}html body #app .quick-actions i svg{width:26px;height:26px}
+ html body #app .section-title{font-size:18px;padding:0;margin-bottom:6px}
+ html body #app .group-heading{font-size:12px;margin:12px 0 0;padding:6px 0}
+ html body #app .bill-main b{font-size:15.5px;line-height:1.3}html body #app .bill-main small{font-size:12.5px;margin-top:2px}
+ html body #app .bill-amount{font-size:15.5px}
+ html body #app .bill-actions button{min-height:36px;padding:7px 16px;font-size:13px}
+ html body #app .upcoming-item{padding:14px}html body #app .installment-overview strong{font-size:28px}
+ html body #app .analytics-card strong{font-size:20px}
+ html body #app .bottom-nav{left:0;right:0;bottom:0;width:100%;max-width:none;transform:none;border:0;border-radius:22px 22px 0 0;background:#fff;box-shadow:0 -3px 18px #10182814;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+ html body #app .bottom-nav button{min-height:56px;gap:4px;font-size:12px;font-weight:600;color:var(--sub);box-shadow:none;background:transparent}
+ html body #app .bottom-nav button span{width:52px;height:30px;border-radius:99px;background:transparent;color:var(--sub);--nav-icon:var(--sub)!important}
+ html body #app .bottom-nav button span svg{width:23px;height:23px}
+ html body #app .bottom-nav button.active{color:var(--link);box-shadow:none;background:transparent}
+ html body #app .bottom-nav button.active span{background:var(--soft);color:var(--link);--nav-icon:var(--link)!important}
+ .auth-screen{padding:24px 20px;margin-top:8px}.auth-orbit{display:none}.auth-brand{margin-bottom:16px}.auth-hero h2{font-size:22px}
 }
-@media (min-width:1100px) and (min-height:600px){
- html body #app .bottom-nav{background:#fff;box-shadow:none;border-right:1px solid var(--m-line)}
- html body #app .bottom-nav::before{color:var(--m-ink);border-color:var(--m-line)}
- html body #app .bottom-nav button{color:var(--m-soft);box-shadow:none}
- html body #app .bottom-nav button span{color:inherit;--nav-icon:currentColor!important}
- html body #app .bottom-nav button:hover{background:var(--m-wash);color:var(--m-ink)}
- html body #app .bottom-nav button.active{background:var(--m-wash);color:var(--link);box-shadow:none}
-}
 
-/* Acesso */
-html body:not(:has(#app:not(.hidden))) .app-header{background:transparent!important;border:0}
-html body .auth-screen{border:1px solid var(--m-line);border-top:3px solid var(--bar);box-shadow:none}
+/* ===== Cada tema com cor, layout e fonte próprios (inspirados no estilo de cada app) ===== */
+@font-face{font-family:"FinInter";src:url("../fonts/inter.woff2") format("woff2");font-weight:200 900;font-display:swap}
+@font-face{font-family:"FinSora";src:url("../fonts/sora.woff2") format("woff2");font-weight:200 900;font-display:swap}
+@font-face{font-family:"FinNunito";src:url("../fonts/nunito-sans.woff2") format("woff2");font-weight:200 900;font-display:swap}
+@font-face{font-family:"FinSource";src:url("../fonts/source-sans-3.woff2") format("woff2");font-weight:200 900;font-display:swap}
+@font-face{font-family:"FinPoppins";src:url("../fonts/poppins-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"FinPoppins";src:url("../fonts/poppins-500.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"FinPoppins";src:url("../fonts/poppins-600.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"FinPoppins";src:url("../fonts/poppins-700.woff2") format("woff2");font-weight:700;font-display:swap}
+html:root:has(#themeSelect option[value="inter"]:checked){--font:"FinInter";--app-bg:#f5f6fa}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .app-header{background:#fff!important;color:#161616!important;border-radius:0;box-shadow:0 1px 0 #ebecf0}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .app-header :is(.profile-name,.header-date,.profile-head .muted,.app-version){color:#161616!important}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .app-header .avatar-fallback{background:#FF7A00!important;color:#fff!important}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .app-header .header-actions :is(.head-icon,#logout){background:#fff1e5!important;color:#e86e00!important}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .app-header .header-search-wrap input{background:#f3f4f7;color:#161616}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .app-header .header-search-wrap input::placeholder{color:#6b7280}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .app-header .header-search-wrap::before{background:#6b7280}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .overview-value,html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .month{font-family:"FinSora",sans-serif!important}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .overview-value{font-weight:650}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .section-title,html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) h2,html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) .start-grid button>span{font-family:"FinSora",sans-serif!important}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) #app .overview-card{border-radius:16px}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) #app .quick-actions button i{background:#fff1e5!important;color:#e86e00!important;border-radius:18px!important;box-shadow:none!important}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) #app :is(.panel,.stat,.start-grid button){border-radius:16px}
+html:root:has(#themeSelect option[value="inter"]:checked) body:has(#app:not(.hidden)) #app .bill-actions button{border-radius:10px}
+html:root:has(#themeSelect option[value="nubank"]:checked){--font:"FinInter";--app-bg:#fff}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) .app-header{background:#820AD1!important;border-radius:0}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) .app-header .profile-name{font-weight:600}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app :is(.panel,.stat){box-shadow:none;border-radius:0;padding-left:0;padding-right:0;border-top:1px solid #eeeef1}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .overview-card{box-shadow:none;border-radius:0;padding:6px 0 22px;border-bottom:1px solid #eeeef1}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .overview-label{font-size:18px;color:#111;font-weight:600}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .overview-value{font-weight:600}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .quick-actions button i{background:#f0f1f5!important;color:#111!important;box-shadow:none!important}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .start-grid button{background:#f0f1f5!important;box-shadow:none!important;border-radius:16px}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .start-grid .menu-icon{background:#fff!important;color:#111!important}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .bill-row::before{background:#f0f1f5}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .bill-row::after{background:#111}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .bill-row.is-paid::before{background:#e4f5ec}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .bill-row.is-paid::after{background:#12794d}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .month-arrow{background:#f0f1f5}
+html:root:has(#themeSelect option[value="nubank"]:checked) body:has(#app:not(.hidden)) #app .bill-actions button{border-radius:99px}
+html:root:has(#themeSelect option[value="bradesco"]:checked){--font:"FinNunito";--app-bg:#f2f2f4}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) .app-header{background:linear-gradient(120deg,#CC092F,#a80b4a)!important;border-radius:0}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app #dashboard{background:linear-gradient(#a90b45,#b30a3c) top/100% 150px no-repeat;margin:-16px -16px 0;padding:16px 16px 0}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app #dashboard .month{color:#fff}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app .month-arrow{background:#ffffff26;color:#fff}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app .overview-card{border-radius:12px;box-shadow:0 8px 20px #0000001f}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app :is(.panel,.stat,.start-grid button){border-radius:12px}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app .quick-actions{gap:8px}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app .quick-actions button{background:#fff!important;border-radius:12px;padding:12px 2px;box-shadow:0 1px 4px #00000014!important}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app .quick-actions button i{background:transparent!important;color:#CC092F!important;box-shadow:none!important;height:38px;width:38px}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app .start-grid .menu-icon{border-radius:10px!important;background:#CC092F!important;color:#fff!important}
+html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app .bill-actions button{border-radius:8px}
+html:root:has(#themeSelect option[value="pan"]:checked){--font:"FinPoppins";--app-bg:#eef7fc}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) .app-header{background:linear-gradient(135deg,#00AEEF,#0077c8)!important;color:#fff!important;border-radius:0 0 36px 36px}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) .app-header :is(.profile-name,.header-date,.profile-head .muted,.app-version,.head-icon,#logout){color:#fff!important}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) .app-header .avatar-fallback{background:#fff!important;color:#0077c8!important}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) .app-header .header-search-wrap input{background:#ffffff2e;color:#fff}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) .app-header .header-search-wrap input::placeholder{color:#fff}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) .app-header .header-search-wrap::before{background:#fff}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) #app .overview-card{border-radius:24px}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) #app .overview-value{font-weight:600;font-size:32px}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) #app .quick-actions button i{background:linear-gradient(135deg,#00AEEF,#0077c8)!important;color:#fff!important}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) #app .quick-actions button{font-size:11.5px}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) #app :is(.overview-progress,.installment-track) span{background:linear-gradient(90deg,#00AEEF,#0077c8)}
+html:root:has(#themeSelect option[value="pan"]:checked) body:has(#app:not(.hidden)) #app .bill-actions button.pay-action{background:#0077c8!important;color:#fff!important}
+html:root:has(#themeSelect option[value="bb"]:checked){--font:"FinSource";--app-bg:#f4f5f9}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) .app-header{border-radius:0;box-shadow:0 2px 6px #0000001a}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app :is(.panel,.stat,.start-grid button,.overview-card){border-radius:8px}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .overview-card{border-left:6px solid #FCEB00}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .overview-value,html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .section-title,html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app h2{color:#0038A8}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .quick-actions button i{background:#0038A8!important;color:#FCEB00!important;border-radius:10px!important}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .start-grid .menu-icon{background:#0038A8!important;color:#FCEB00!important;border-radius:8px!important}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .bill-row::before{border-radius:8px}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .bill-actions button{border-radius:6px}
+html:root:has(#themeSelect option[value="bb"]:checked) body:has(#app:not(.hidden)) #app .bottom-nav{border-radius:0;border-top:3px solid #FCEB00}
+@media (min-width:621px){html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app #dashboard{background:none;margin:0 auto;padding:0}html:root:has(#themeSelect option[value="bradesco"]:checked) body:has(#app:not(.hidden)) #app :is(#dashboard .month,.month-arrow){color:var(--text);background:transparent}}
+
+/* Acesso: sempre com a identidade do Meu Financeiro */
+html body:not(:has(#app:not(.hidden))){--font:"Figtree";--bar:#131a2a;--bar-ink:#fff;--cta:#131a2a;--cta-ink:#fff;--link:#33415c;background:#131a2a!important}
+html:root:has(body #app.hidden){background:#131a2a}
+html body:not(:has(#app:not(.hidden))) .auth-screen{border-top-color:#131a2a}
+
+/* Acabamentos */
+html body .app-header .header-actions .head-icon{display:grid!important;place-items:center;line-height:1;margin:0;align-self:center}
+html body .app-header .header-actions .head-icon:hover{transform:none}
+html body .app-header .header-date,html body #app .month{text-transform:none}
+html body .app-header .header-date{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+html body .app-header .profile-head>div:last-child{min-width:0}
+html body .app-header .header-date::first-letter,html body #app .month::first-letter{text-transform:uppercase}
+html body #app #startView>.panel{border:0!important}
+html body:not(:has(#app:not(.hidden))) .app-header{display:none!important}
+html body:not(:has(#app:not(.hidden))){--brand-safe:#33415c;--green:#131a2a;--olive:#33415c}
+html body:not(:has(#app:not(.hidden))) .auth-screen{margin-top:max(24px,6vh)}
+html body .app-header .header-date{white-space:normal;overflow:visible;line-height:1.3}
+@media (max-width:620px){html body .app-header .header-date{font-size:12px}}
+@media (min-width:621px){html body #app .section-title{font-size:18px}}
